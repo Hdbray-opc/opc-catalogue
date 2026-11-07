@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.OPC_PWA=true</script>
+<script src="lock.js"></script>
+<title>OPC Catalogue Pièces – Licence</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<script src="app.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f63b5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OPC Pièces">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+/* Licence screen: the catalogue is encrypted and opens only with the licence key.
+   Windows: the key is sent to the app (POST /api/licence), which decrypts the catalogue.
+   Phone (window.OPC_PWA): the key is checked here, with the browser's own crypto; the AES key
+   is kept (non-exportable) in IndexedDB for the service worker, which decrypts each file. */
+:root{--bg:#0d1218;--card:#16202b;--ink:#eef2f6;--ink-2:#9aa7b4;--line:#2a3846;--arden:#1f63b5;--arden-hi:#5d9be0;--no:#ff8a80}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{background:radial-gradient(120% 90% at 50% 30%,#1b2836 0%,#16202b 40%,var(--bg) 100%);color:var(--ink);font:15px/1.5 Archivo,system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;padding:24px 16px}
+main{width:min(420px,100%);text-align:center}
+.logo{height:110px;width:auto;display:block;margin:0 auto 18px;overflow:visible;filter:drop-shadow(0 0 12px rgba(93,155,224,.35))}
+h1{font:800 26px/1.1 "Archivo Narrow",Arial,sans-serif;margin:0 0 6px;letter-spacing:.01em}
+p{color:var(--ink-2);margin:0 0 20px}
+form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;text-align:left}
+label{display:block;font:600 12px "Archivo Narrow",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--arden-hi);margin-bottom:8px}
+input{width:100%;font:600 17px/1.2 "JetBrains Mono",ui-monospace,Consolas,monospace;letter-spacing:.06em;text-transform:uppercase;padding:12px;border-radius:8px;border:1px solid var(--line);background:#0f171f;color:var(--ink)}
+input:focus{outline:none;border-color:var(--arden-hi);box-shadow:0 0 0 3px rgba(93,155,224,.25)}
+button{margin-top:14px;width:100%;padding:12px;border:0;border-radius:8px;background:var(--arden);color:#fff;font:700 15px "Archivo Narrow",sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+button:hover{background:#2a72c8}
+button:disabled{opacity:.6;cursor:wait}
+.msg{min-height:22px;margin-top:10px;font-size:13.5px;color:var(--no)}
+.msg.ok{color:#8fe0a8}
+small{display:block;margin-top:16px;color:var(--ink-2);font-size:12px}
+</style>
+</head>
+<body>
+<main>
+  <svg class="logo" viewBox="0 0 200 236" role="img" aria-label="Opel OPC"><defs><linearGradient id="hArden" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a9be3"/><stop offset=".45" stop-color="#1f63b5"/><stop offset=".55" stop-color="#17549d"/><stop offset="1" stop-color="#0f3c73"/></linearGradient><linearGradient id="hArdenU" gradientUnits="userSpaceOnUse" x1="0" y1="170" x2="0" y2="236"><stop offset="0" stop-color="#5a9be3"/><stop offset=".45" stop-color="#1f63b5"/><stop offset=".55" stop-color="#17549d"/><stop offset="1" stop-color="#0f3c73"/></linearGradient></defs><circle cx="100" cy="95" r="65" fill="none" stroke="url(#hArden)" stroke-width="12"/><path d="M18 87 L30 77 L148 77 L117 98 L172 98 L184 106 L172 114 L52 114 L84 92 L30 92 Z" fill="url(#hArden)" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/><g fill="none" stroke="url(#hArdenU)" stroke-width="12" stroke-linecap="round"><path d="M52 176 C30 176 24 190 24 198 C24 208 32 220 52 220 C72 220 80 208 80 198 C80 188 72 176 52 176 Z"/><path d="M97 234 L97 182"/><path d="M97 198 C97 186 106 176 119 176 C132 176 140 186 140 198 C140 210 132 220 119 220 C106 220 97 210 97 198"/><path d="M194 184 C188 178 181 176 174 176 C160 176 152 187 152 198 C152 209 160 220 174 220 C181 220 188 218 194 212"/></g></svg>
+  <h1>Catalogue atelier - hors ligne</h1>
+  <p>Ce catalogue est protégé. Saisissez votre clé de licence pour l'ouvrir.</p>
+  <form id="f" autocomplete="off">
+    <label for="k">Clé de licence</label>
+    <input id="k" name="k" placeholder="OPC-XXXXX-XXXXX-XXXXX-XXXXX" spellcheck="false" autocapitalize="characters" autocomplete="off" required>
+    <button id="b" type="submit">Ouvrir le catalogue</button>
+    <div class="msg" id="m" role="status"></div>
+  </form>
+  <small id="note">La clé n'est demandée qu'une fois sur cet appareil.</small>
+</main>
+<script>
+(function(){
+'use strict';
+var f=document.getElementById('f'),k=document.getElementById('k'),b=document.getElementById('b'),m=document.getElementById('m');
+function say(t,ok){m.textContent=t;m.className='msg'+(ok?' ok':'')}
+/* same rules as the app: case, spaces and dashes do not matter, O = 0, I/L = 1 */
+function norm(s){s=String(s).toUpperCase().replace(/O/g,'0').replace(/[IL]/g,'1').replace(/[^0-9A-Z]/g,'');if(s.length===23&&s.indexOf('0PC')===0)s=s.slice(3);return s}
+var unlock=function(key){
+  return fetch('/api/licence',{method:'POST',body:key}).then(function(r){if(r.status===204)return;if(r.status===403)throw new Error('bad');throw new Error('net')});
+};
+var done=function(){location.replace('/')};
+if(window.OPC_LOCK){unlock=window.OPC_LOCK.unlock;done=window.OPC_LOCK.done}
+f.addEventListener('submit',function(e){
+  e.preventDefault();var key=norm(k.value);
+  if(key.length!==20){say('Une clé compte 20 caractères après « OPC- ». Vérifiez votre saisie.');return}
+  b.disabled=true;say('Vérification…',true);
+  Promise.resolve().then(function(){return unlock(key)}).then(function(){say('Clé acceptée.',true);return done()})
+    .catch(function(err){b.disabled=false;say(err&&err.message==='bad'?'Clé de licence incorrecte.':'Vérification impossible : '+(err&&err.message||err))});
+});
+k.focus();
+})();
+</script>
+</body>
+</html>
