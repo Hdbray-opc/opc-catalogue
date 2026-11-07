@@ -8,8 +8,17 @@
   try{window.__STATE=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){window.__STATE={}}
   if(!window.__STATE||typeof window.__STATE!=='object')window.__STATE={};
   var realFetch=window.fetch.bind(window);
+  // settings page, "Licence" tab: the key kept on this phone at activation, or forget it
+  function idb(){return new Promise(function(ok,ko){var r=indexedDB.open('opc-licence',1);r.onupgradeneeded=function(){r.result.createObjectStore('k')};r.onsuccess=function(){ok(r.result)};r.onerror=function(){ko(r.error)}})}
+  function licence(m){
+    return idb().then(function(d){return new Promise(function(ok){
+      if(m==='DELETE'){var t=d.transaction('k','readwrite');t.objectStore('k').delete('aes');t.objectStore('k').delete('lic');t.oncomplete=function(){ok(new Response(null,{status:204}))};t.onerror=t.oncomplete;return}
+      var g=d.transaction('k').objectStore('k').get('lic');g.onsuccess=function(){ok(new Response(JSON.stringify({key:g.result||''}),{status:200,headers:{'Content-Type':'application/json'}}))};g.onerror=function(){ok(new Response('{}',{status:200}))};
+    })});
+  }
   window.fetch=function(u,o){
     var s=typeof u==='string'?u:(u&&u.url)||'';
+    if(/\/api\/licence$/.test(s))return licence(o&&o.method);
     if(/\/api\/state$/.test(s)){
       try{
         if(o&&o.method==='POST'){JSON.parse(o.body);localStorage.setItem(KEY,o.body);return Promise.resolve(new Response(null,{status:204}))}
