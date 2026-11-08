@@ -10,11 +10,25 @@
   var realFetch=window.fetch.bind(window);
   // settings page, "Licence" tab: the key kept on this phone at activation, or forget it
   function idb(){return new Promise(function(ok,ko){var r=indexedDB.open('opc-licence',1);r.onupgradeneeded=function(){r.result.createObjectStore('k')};r.onsuccess=function(){ok(r.result)};r.onerror=function(){ko(r.error)}})}
+  function idbGet(d,names){return new Promise(function(ok){var o=d.transaction('k').objectStore('k'),out={},n=names.length;names.forEach(function(k){var g=o.get(k);g.onsuccess=function(){out[k]=g.result;if(!--n)ok(out)};g.onerror=function(){if(!--n)ok(out)}})})}
+  // the key is kept sealed with a non-exportable browser key (see lock.js); a key kept in
+  // clear by version 1.10 is sealed the first time it is read
+  function sealLic(d,k){return crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']).then(function(wk){
+    var iv=crypto.getRandomValues(new Uint8Array(12));
+    return crypto.subtle.encrypt({name:'AES-GCM',iv:iv},wk,new TextEncoder().encode(k)).then(function(ct){return new Promise(function(ok){
+      var t=d.transaction('k','readwrite'),o=t.objectStore('k');o.put(wk,'wk');o.put({iv:iv,ct:new Uint8Array(ct)},'lic');t.oncomplete=ok;t.onerror=ok})});
+  })}
+  function json(o){return new Response(JSON.stringify(o),{status:200,headers:{'Content-Type':'application/json'}})}
   function licence(m){
-    return idb().then(function(d){return new Promise(function(ok){
-      if(m==='DELETE'){var t=d.transaction('k','readwrite');t.objectStore('k').delete('aes');t.objectStore('k').delete('lic');t.oncomplete=function(){ok(new Response(null,{status:204}))};t.onerror=t.oncomplete;return}
-      var g=d.transaction('k').objectStore('k').get('lic');g.onsuccess=function(){ok(new Response(JSON.stringify({key:g.result||''}),{status:200,headers:{'Content-Type':'application/json'}}))};g.onerror=function(){ok(new Response('{}',{status:200}))};
-    })});
+    return idb().then(function(d){
+      if(m==='DELETE')return new Promise(function(ok){var t=d.transaction('k','readwrite'),o=t.objectStore('k');['aes','wk','lic'].forEach(function(k){o.delete(k)});t.oncomplete=function(){ok(new Response(null,{status:204}))};t.onerror=t.oncomplete});
+      return idbGet(d,['lic','wk']).then(function(v){
+        var l=v.lic;
+        if(typeof l==='string'&&l)return sealLic(d,l).then(function(){return json({key:l})});
+        if(!l||!v.wk||!l.ct)return json({key:''});
+        return crypto.subtle.decrypt({name:'AES-GCM',iv:l.iv},v.wk,l.ct).then(function(p){return json({key:new TextDecoder().decode(p)})},function(){return json({key:''})});
+      });
+    }).catch(function(){return json({key:''})});
   }
   window.fetch=function(u,o){
     var s=typeof u==='string'?u:(u&&u.url)||'';

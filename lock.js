@@ -6,7 +6,13 @@
   'use strict';
   function b64(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
   function db(){return new Promise(function(ok,ko){var r=indexedDB.open('opc-licence',1);r.onupgradeneeded=function(){r.result.createObjectStore('k')};r.onsuccess=function(){ok(r.result)};r.onerror=function(){ko(r.error)}})}
-  function put(v,k){return db().then(function(d){return new Promise(function(ok,ko){var t=d.transaction('k','readwrite');t.objectStore('k').put(v,'aes');t.objectStore('k').put(k,'lic');t.oncomplete=ok;t.onerror=function(){ko(t.error)}})})}
+  // the licence key itself is not kept in clear: it is sealed with a random AES key that
+  // this browser keeps non-exportable (raw key bytes can never be read out of it)
+  function seal(k){return crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']).then(function(wk){
+    var iv=crypto.getRandomValues(new Uint8Array(12));
+    return crypto.subtle.encrypt({name:'AES-GCM',iv:iv},wk,new TextEncoder().encode(k)).then(function(ct){return {wk:wk,lic:{iv:iv,ct:new Uint8Array(ct)}}});
+  })}
+  function put(v,k){return seal(k).then(function(s){return db().then(function(d){return new Promise(function(ok,ko){var t=d.transaction('k','readwrite'),o=t.objectStore('k');o.put(v,'aes');o.put(s.wk,'wk');o.put(s.lic,'lic');t.oncomplete=ok;t.onerror=function(){ko(t.error)}})})})}
   function get(){return db().then(function(d){return new Promise(function(ok){var t=d.transaction('k').objectStore('k').get('aes');t.onsuccess=function(){ok(t.result||null)};t.onerror=function(){ok(null)}})}).catch(function(){return null})}
   var lockInfo=fetch('lock.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('réseau');return r.json()});
   function check(key){return lockInfo.then(function(L){var c=b64(L.check);return crypto.subtle.decrypt({name:'AES-GCM',iv:c.slice(0,12)},key,c.slice(12))})}
