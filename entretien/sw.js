@@ -1,6 +1,6 @@
 /* Carnet d'entretien: keeps the app on the phone so it opens without network.
    The entries themselves are in the browser's storage (localStorage), not here. */
-var CACHE='opc-entretien-1.0.0';
+var CACHE='opc-entretien-1.0.1';
 var FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png',
   'fonts/Archivo-400.woff2','fonts/Archivo-600.woff2','fonts/ArchivoNarrow-700.woff2'];
 self.addEventListener('install',function(e){

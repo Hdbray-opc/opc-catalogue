@@ -1,7 +1,7 @@
 {
   "name": "carnet-entretien-opc",
   "productName": "Carnet entretien OPC",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Carnet d'entretien et budget de l'Insignia OPC",
   "main": "main.js",
   "private": true,

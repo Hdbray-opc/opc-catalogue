@@ -64,6 +64,10 @@ tr.editing td{background:color-mix(in srgb,var(--acc) 18%,var(--card))}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
 .note{color:var(--mute);font-size:13px;margin-top:12px}
 .hide{display:none!important}
+.inst{position:relative;border-color:var(--acc);border-width:2px}
+.inst p{margin:6px 0 0}
+.inst .x{position:absolute;top:6px;right:4px}
+.inst .sec{margin-top:10px}
 /* budget tab (from the "Budget entretien" artifact) */
 .km{display:flex;align-items:center;gap:10px}
 .km input{width:110px}
@@ -92,6 +96,12 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <div class="w">
 <h1>Carnet d'entretien – Insignia OPC</h1>
 <p class="sub">2.8 V6 Turbo 325 ch, 4x4, 2014</p>
+<div class="card inst hide" id="inst" role="note">
+<button class="x" id="instX" aria-label="Fermer">×</button>
+<b>Installer sur l'iPhone</b>
+<p id="instT"></p>
+<button class="sec hide" id="instC">Copier l'adresse</button>
+</div>
 <nav role="tablist">
 <button role="tab" id="tabLog" aria-selected="true" aria-controls="pLog">Mes entretiens</button>
 <button role="tab" id="tabBud" aria-selected="false" aria-controls="pBud">Budget prévisionnel</button>
@@ -107,8 +117,8 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <form class="card frm" id="frm" autocomplete="off">
 <label class="dt">Date<input id="fD" type="date" required></label>
 <label class="op">Type d'opération<input id="fT" list="types" placeholder="Ex. Vidange huile + filtre" required><datalist id="types"></datalist></label>
-<label>Prix €<input id="fP" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0,00" required></label>
-<label>Kilométrage<input id="fK" type="number" inputmode="numeric" min="0" placeholder="Facultatif"></label>
+<label>Prix €<input id="fP" type="text" inputmode="decimal" placeholder="0,00" required></label>
+<label>Kilométrage<input id="fK" type="text" inputmode="numeric" placeholder="Facultatif"></label>
 <label class="nt">Note<input id="fN" placeholder="Garage, pièces, référence… (facultatif)"></label>
 <div class="btns"><button class="pri" id="fB" type="submit">Ajouter l'entretien</button><button class="sec hide" id="fC" type="button">Annuler</button></div>
 <div id="fMsg" role="status"></div>
@@ -252,7 +262,7 @@ function resetForm(){
 $('fD').value=today();
 $('frm').addEventListener('submit',function(ev){
   ev.preventDefault();
-  var d=$('fD').value,t=$('fT').value.trim(),p=parseFloat(String($('fP').value).replace(',','.')),km=parseInt($('fK').value,10),n=$('fN').value.trim();
+  var d=$('fD').value,t=$('fT').value.trim(),p=parseFloat(String($('fP').value).replace(/[\s\u00a0\u202f€]/g,'').replace(',','.')),km=parseInt(String($('fK').value).replace(/\D/g,''),10),n=$('fN').value.trim();
   if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){say($('fMsg'),'Indique une date.',true);return}
   if(!t){say($('fMsg'),"Indique le type d'opération.",true);return}
   if(!(p>=0)){say($('fMsg'),'Indique un prix (0 si gratuit).',true);return}
@@ -269,7 +279,7 @@ $('tb').addEventListener('click',function(ev){
   var id=b.getAttribute('data-ed');
   if(id){
     var e=S.log.filter(function(x){return x.id===id})[0];if(!e)return;
-    editId=id;$('fD').value=e.d;$('fT').value=e.t;$('fP').value=e.p;$('fK').value=e.km||'';$('fN').value=e.n||'';
+    editId=id;$('fD').value=e.d;$('fT').value=e.t;$('fP').value=String(e.p).replace('.',',');$('fK').value=e.km||'';$('fN').value=e.n||'';
     $('fB').textContent='Enregistrer la modification';$('fC').classList.remove('hide');
     say($('fMsg'),'Modification de « '+e.t+' » du '+frDate(e.d)+'.');renderLog();
     $('frm').scrollIntoView({behavior:'smooth',block:'start'});$('fT').focus({preventScroll:true});
@@ -374,6 +384,24 @@ $('rst').onclick=function(){
 renderLog();
 var t0='log';try{t0=localStorage.getItem(K+'.tab')||'log'}catch(e){}
 tab(t0);
+
+/* iPhone / iPad: there is no install prompt, so explain the steps (and Safari is needed
+   when the page was opened inside another app, e.g. GitHub, Gmail, Messenger) */
+(function(){
+  var ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+  var installed=navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches;
+  var off=false;try{off=localStorage.getItem(K+'.inst')==='off'}catch(e){}
+  if(!ios||installed||off||!/^https?:$/.test(location.protocol))return;
+  var safari=/Safari\//.test(ua)&&!/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|FBAN|FBAV|Instagram|Line\/|Snapchat|GitHub/.test(ua);
+  var addr='https://hdbray-opc.github.io/opc-catalogue/entretien/';
+  $('instT').innerHTML=safari
+    ?'Touche le bouton <b>Partager</b> (le carré avec une flèche vers le haut, en bas de l\'écran ou à côté de l\'adresse), fais défiler et choisis <b>Sur l\'écran d\'accueil</b>, puis <b>Ajouter</b>. L\'app s\'ouvrira ensuite depuis son icône, même sans réseau.'
+    :'Cette page est ouverte dans une autre application que Safari, qui ne permet pas de l\'installer. Copie l\'adresse, ouvre <b>Safari</b>, colle-la dans la barre d\'adresse, puis Partager › <b>Sur l\'écran d\'accueil</b>.<br><small>'+addr+'</small>';
+  if(!safari)$('instC').classList.remove('hide');
+  $('instC').onclick=function(){var b=this;(navigator.clipboard?navigator.clipboard.writeText(addr):Promise.reject()).then(function(){b.textContent='Adresse copiée'},function(){b.textContent='Copie impossible : recopie l\'adresse ci-dessus'})};
+  $('instX').onclick=function(){$('inst').classList.add('hide');try{localStorage.setItem(K+'.inst','off')}catch(e){}};
+  $('inst').classList.remove('hide');
+})();
 
 /* offline on the phone (not needed in the Windows app, which loads local files) */
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
