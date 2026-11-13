@@ -41,8 +41,8 @@ input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid 
 .btns{grid-column:1/-1;display:flex;gap:8px}
 .pri{flex:1;font:600 15px Archivo,system-ui,sans-serif;background:var(--acc);color:#1b2230;border:0;border-radius:8px;padding:11px;cursor:pointer}
 .sec{font:inherit;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer}
-#fMsg{grid-column:1/-1;color:var(--mute);font-size:13px;min-height:1em}
-#fMsg.err{color:var(--no)}
+#fMsg,#uMsg{grid-column:1/-1;color:var(--mute);font-size:13px;min-height:1em}
+#fMsg.err,#uMsg.err{color:var(--no)}
 .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:16px 0 8px}
 .bar h2{font:700 20px/1 "Archivo Narrow",Archivo,sans-serif;margin:0;flex:1}
 .bar select{width:auto}
@@ -64,6 +64,38 @@ tr.editing td{background:color-mix(in srgb,var(--acc) 18%,var(--card))}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
 .note{color:var(--mute);font-size:13px;margin-top:12px}
 .hide{display:none!important}
+/* fuel tab */
+.frm.fu{grid-template-columns:160px 1fr 1fr 1fr}
+.chk{flex-direction:row!important;align-items:center;gap:8px!important;font-size:14px!important;color:var(--ink)!important;grid-column:1/-1}
+.chk input{width:20px;height:20px;accent-color:var(--acc)}
+#uLive{grid-column:1/-1;font-size:13px;color:var(--mute);min-height:1em}
+.sum.four{display:grid;grid-template-columns:repeat(4,1fr)}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px}
+.info div{display:flex;flex-direction:column}
+.info small{color:var(--mute);font-size:12px}
+.info b{font-variant-numeric:tabular-nums}
+td.part{color:var(--mute);font-size:12.5px}
+/* intro: same look as the OPC Pièces catalogue (dark blue night, Arden blue OPC logo) */
+#intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;cursor:pointer;
+  background:radial-gradient(120% 90% at 50% 30%,#1b2836 0%,#16202b 40%,#0d1218 100%);color:#eef2f6;
+  animation:inOut .55s ease-in 2.75s forwards}
+#intro .lg{height:150px;width:auto;overflow:visible;filter:drop-shadow(0 0 12px rgba(93,155,224,.35));animation:glow 1.2s ease-in-out 1.3s both}
+#intro .ring{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s cubic-bezier(.6,.1,.3,1) .15s forwards}
+#intro .blitz{opacity:0;transform:translateX(-46px);animation:blitz .55s cubic-bezier(.2,.8,.2,1) .7s forwards}
+#intro .opc path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .55s ease-out forwards}
+#intro .opc path:nth-child(1){animation-delay:.95s}#intro .opc path:nth-child(2){animation-delay:1.05s}
+#intro .opc path:nth-child(3){animation-delay:1.1s}#intro .opc path:nth-child(4){animation-delay:1.2s}
+#intro h2{font:700 clamp(22px,7vw,32px)/1.1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;margin:26px 0 6px;opacity:0;animation:rise .6s ease-out 1.55s forwards}
+#intro p{font:600 13px "Archivo Narrow",Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#5d9be0;margin:0;opacity:0;animation:rise .6s ease-out 1.75s forwards}
+#intro .sweep{height:2px;width:220px;margin:16px auto 0;background:linear-gradient(90deg,transparent,#5d9be0,#1f63b5,transparent);transform:scaleX(0);animation:sweep .7s ease-out 1.85s forwards}
+#intro small{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:0;right:0;font-size:12px;color:#9aa7b4;opacity:0;animation:rise .4s 1.2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes blitz{to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes sweep{to{transform:scaleX(1)}}
+@keyframes glow{50%{filter:drop-shadow(0 0 26px rgba(93,155,224,.75))}100%{filter:drop-shadow(0 0 12px rgba(93,155,224,.35))}}
+@keyframes inOut{to{opacity:0;transform:scale(1.06);visibility:hidden}}
+@media (prefers-reduced-motion:reduce){#intro *{animation-duration:.01s!important;animation-delay:0s!important}#intro{animation:inOut .4s ease-in 1.2s forwards}}
 .inst{position:relative;border-color:var(--acc);border-width:2px}
 .inst p{margin:6px 0 0}
 .inst .x{position:absolute;top:6px;right:4px}
@@ -86,6 +118,8 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
   .frm{grid-template-columns:1fr 1fr}
   .frm .op,.frm .nt{grid-column:1/-1}
   .frm .dt{grid-column:1/-1}
+  .frm.fu{grid-template-columns:1fr 1fr}
+  .sum.four{grid-template-columns:1fr 1fr}
   .hk{display:none}
   th,td{padding:8px 6px}
   .sum{gap:12px}.sum b{font-size:22px}
@@ -93,6 +127,18 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 </style>
 </head>
 <body>
+<div id="intro" class="hide" aria-hidden="true">
+<div>
+<svg class="lg" viewBox="0 0 200 236"><defs><linearGradient id="iA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a9be3"/><stop offset=".45" stop-color="#1f63b5"/><stop offset=".55" stop-color="#17549d"/><stop offset="1" stop-color="#0f3c73"/></linearGradient><linearGradient id="iAU" gradientUnits="userSpaceOnUse" x1="0" y1="170" x2="0" y2="236"><stop offset="0" stop-color="#5a9be3"/><stop offset=".45" stop-color="#1f63b5"/><stop offset=".55" stop-color="#17549d"/><stop offset="1" stop-color="#0f3c73"/></linearGradient></defs>
+<circle class="ring" pathLength="1" cx="100" cy="95" r="65" fill="none" stroke="url(#iA)" stroke-width="12" transform="rotate(-90 100 95)"/>
+<path class="blitz" d="M18 87 L30 77 L148 77 L117 98 L172 98 L184 106 L172 114 L52 114 L84 92 L30 92 Z" fill="url(#iA)" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>
+<g class="opc" fill="none" stroke="url(#iAU)" stroke-width="12" stroke-linecap="round"><path pathLength="1" d="M52 176 C30 176 24 190 24 198 C24 208 32 220 52 220 C72 220 80 208 80 198 C80 188 72 176 52 176 Z"/><path pathLength="1" d="M97 234 L97 182"/><path pathLength="1" d="M97 198 C97 186 106 176 119 176 C132 176 140 186 140 198 C140 210 132 220 119 220 C106 220 97 210 97 198"/><path pathLength="1" d="M194 184 C188 178 181 176 174 176 C160 176 152 187 152 198 C152 209 160 220 174 220 C181 220 188 218 194 212"/></g></svg>
+<h2>Carnet d'entretien</h2>
+<p>Insignia OPC · 2.8 V6 Turbo</p>
+<div class="sweep"></div>
+</div>
+<small>Touchez pour passer</small>
+</div>
 <div class="w">
 <h1>Carnet d'entretien – Insignia OPC</h1>
 <p class="sub">2.8 V6 Turbo 325 ch, 4x4, 2014</p>
@@ -103,8 +149,9 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <button class="sec hide" id="instC">Copier l'adresse</button>
 </div>
 <nav role="tablist">
-<button role="tab" id="tabLog" aria-selected="true" aria-controls="pLog">Mes entretiens</button>
-<button role="tab" id="tabBud" aria-selected="false" aria-controls="pBud">Budget prévisionnel</button>
+<button role="tab" id="tabLog" aria-selected="true" aria-controls="pLog">Entretiens</button>
+<button role="tab" id="tabFuel" aria-selected="false" aria-controls="pFuel">Essence</button>
+<button role="tab" id="tabBud" aria-selected="false" aria-controls="pBud">Budget</button>
 </nav>
 
 <section id="pLog" role="tabpanel" aria-labelledby="tabLog">
@@ -132,14 +179,44 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <tfoot><tr><td colspan="2" id="ftL">Total</td><td class="hk"></td><td class="n" id="ftT">–</td><td></td></tr></tfoot>
 </table>
 
-<div class="tools">
-<button class="sec" id="xCsv">Exporter pour Excel (.csv)</button>
-<button class="sec" id="xJson">Sauvegarder (.json)</button>
-<button class="sec" id="iJson">Restaurer une sauvegarde</button>
-<input type="file" id="iFile" accept=".json,application/json" class="hide">
+<div class="tools"><button class="sec" id="xCsv">Exporter pour Excel (.csv)</button></div>
+</section>
+
+<section id="pFuel" role="tabpanel" aria-labelledby="tabFuel" class="hide">
+<div class="sum four">
+<div><small>Moyenne</small><b id="uAvg">–</b></div>
+<div><small>Coût aux 100 km</small><b id="uC100">–</b></div>
+<div><small>Budget par mois</small><b id="uMo">–</b></div>
+<div><small>Total essence</small><b id="uTot">–</b></div>
 </div>
-<p class="note" id="ioMsg" role="status"></p>
-<p class="note">Tes entretiens restent sur cet appareil. Fais une sauvegarde de temps en temps : elle se restaure aussi bien sur le téléphone que sur l'ordinateur.</p>
+
+<form class="card frm fu" id="ufrm" autocomplete="off">
+<label class="dt">Date<input id="uD" type="date" required></label>
+<label>Kilométrage compteur<input id="uK" type="text" inputmode="numeric" placeholder="Ex. 128 500" required></label>
+<label>Litres mis<input id="uL" type="text" inputmode="decimal" placeholder="Ex. 62,4" required></label>
+<label>Prix payé €<input id="uP" type="text" inputmode="decimal" placeholder="Ex. 118,50" required></label>
+<label class="chk"><input id="uF" type="checkbox" checked> Plein complet (réservoir rempli à ras)</label>
+<div id="uLive"></div>
+<div class="btns"><button class="pri" id="uB" type="submit">Ajouter le plein</button><button class="sec hide" id="uC" type="button">Annuler</button></div>
+<div id="uMsg" class="fmsg" role="status"></div>
+</form>
+
+<div class="card info">
+<div><small>Prix moyen du litre</small><b id="uPL">–</b></div>
+<div><small>Litres au total</small><b id="uLT">–</b></div>
+<div><small>Km suivis</small><b id="uKm">–</b></div>
+<div><small>Rythme retenu</small><b id="uRy">–</b></div>
+<div><small>Budget par an</small><b id="uAn">–</b></div>
+</div>
+
+<div class="bar"><h2>Pleins</h2></div>
+<table>
+<thead><tr><th>Date</th><th class="n hk">Km</th><th class="n">Litres</th><th class="n">Prix</th><th class="n hk">€/L</th><th class="n">L/100</th><th class="act"><span class="hide">Actions</span></th></tr></thead>
+<tbody id="utb"></tbody>
+<tfoot><tr><td id="uftL">Total</td><td class="hk"></td><td class="n" id="uftL2">–</td><td class="n" id="uftP">–</td><td class="hk"></td><td class="n" id="uftA">–</td><td></td></tr></tfoot>
+</table>
+<div class="tools"><button class="sec" id="uCsv">Exporter pour Excel (.csv)</button></div>
+<p class="note">La consommation se calcule d'un plein complet au suivant : litres mis depuis le plein complet précédent ÷ km parcourus × 100. Coche « Plein complet » quand tu remplis le réservoir à ras ; si tu mets seulement quelques litres, décoche-la et ces litres seront comptés au prochain plein complet. Le budget par mois = coût aux 100 km × ton rythme de km par mois, calculé à partir de tes pleins (ou à partir du kilométrage annuel de l'onglet Budget tant qu'il y a moins d'un mois de pleins).</p>
 </section>
 
 <section id="pBud" role="tabpanel" aria-labelledby="tabBud" class="hide">
@@ -153,6 +230,14 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <p class="note">Une ligne revient quand l'intervalle en km ou en mois est atteint, le plus court des deux. Laisse 0 pour ignorer un critère. Les montants sont des estimations de pièces commandées en ligne, sans main-d'œuvre.</p>
 <button class="sec" id="rst">Réinitialiser le budget</button>
 </section>
+
+<div class="tools">
+<button class="sec" id="xJson">Sauvegarder (.json)</button>
+<button class="sec" id="iJson">Restaurer une sauvegarde</button>
+<input type="file" id="iFile" accept=".json,application/json" class="hide">
+</div>
+<p class="note" id="ioMsg" role="status"></p>
+<p class="note">Tes entretiens et tes pleins restent sur cet appareil. Fais une sauvegarde de temps en temps : elle se restaure aussi bien sur le téléphone que sur l'ordinateur.</p>
 </div>
 
 <script>
@@ -200,21 +285,24 @@ var S=null;
 try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
 if(!S||typeof S!=='object')S={};
 if(!Array.isArray(S.log))S.log=[];
+if(!Array.isArray(S.fuel))S.fuel=[];
 if(!S.budget||!Array.isArray(S.budget.rows))S.budget=defBudget();
 var storeOk=true;
 function save(){try{localStorage.setItem(K,JSON.stringify(S));storeOk=true}catch(e){storeOk=false;say($('fMsg'),"Enregistrement impossible sur cet appareil (stockage plein ou bloqué).",true)}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
-function say(el,t,err){el.textContent=t;el.className=el.id==='fMsg'?(err?'err':''):'note'}
+function say(el,t,err){el.textContent=t;el.className=el.getAttribute('role')==='status'&&el.id!=='ioMsg'?(err?'err':''):'note'}
 
 /* ---------- tabs ---------- */
+var TABS={log:['tabLog','pLog'],fuel:['tabFuel','pFuel'],bud:['tabBud','pBud']};
 function tab(which){
-  var log=which!=='bud';
-  $('tabLog').setAttribute('aria-selected',log);$('tabBud').setAttribute('aria-selected',!log);
-  $('pLog').classList.toggle('hide',!log);$('pBud').classList.toggle('hide',log);
+  if(!TABS[which])which='log';
+  Object.keys(TABS).forEach(function(k){$(TABS[k][0]).setAttribute('aria-selected',k===which);$(TABS[k][1]).classList.toggle('hide',k!==which)});
   try{localStorage.setItem(K+'.tab',which)}catch(e){}
-  if(!log)renderBudget();
+  if(which==='bud')renderBudget();
+  if(which==='fuel')renderFuel();
 }
 $('tabLog').onclick=function(){tab('log')};
+$('tabFuel').onclick=function(){tab('fuel')};
 $('tabBud').onclick=function(){tab('bud')};
 
 /* ---------- maintenance log ---------- */
@@ -305,18 +393,18 @@ function download(name,type,text){
   document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
 }
 $('xCsv').onclick=function(){
-  if(!S.log.length){say($('ioMsg'),'Rien à exporter pour l\'instant.');return}
+  if(!S.log.length){say($('fMsg'),'Rien à exporter pour l\'instant.');return}
   function c(v){v=String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
   var rows=sorted().reverse(),tot=0;
   var out=['Date;Opération;Kilométrage;Prix (€);Note'];
   rows.forEach(function(e){tot+=e.p;out.push([frDate(e.d),c(e.t),e.km||'',e.p.toFixed(2).replace('.',','),c(e.n||'')].join(';'))});
   out.push(';Total;;'+tot.toFixed(2).replace('.',',')+';');
   download('entretien-insignia-opc-'+today()+'.csv','text/csv;charset=utf-8','﻿'+out.join('\r\n'));
-  say($('ioMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
+  say($('fMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
 };
 $('xJson').onclick=function(){
-  download('sauvegarde-entretien-opc-'+today()+'.json','application/json',JSON.stringify({app:'opc-entretien',v:1,saved:new Date().toISOString(),log:S.log,budget:S.budget},null,1));
-  say($('ioMsg'),'Sauvegarde créée : '+S.log.length+' entretien'+(S.log.length>1?'s':'')+' et le budget.');
+  download('sauvegarde-entretien-opc-'+today()+'.json','application/json',JSON.stringify({app:'opc-entretien',v:2,saved:new Date().toISOString(),log:S.log,fuel:S.fuel,budget:S.budget},null,1));
+  say($('ioMsg'),'Sauvegarde créée : '+S.log.length+' entretien'+(S.log.length>1?'s':'')+', '+S.fuel.length+' plein'+(S.fuel.length>1?'s':'')+' et le budget.');
 };
 $('iJson').onclick=function(){$('iFile').click()};
 $('iFile').onchange=function(){
@@ -328,9 +416,137 @@ $('iFile').onchange=function(){
     var add=o.log.filter(function(e){return e&&e.id&&!have[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&typeof e.t==='string'&&typeof e.p==='number'})
       .map(function(e){return{id:String(e.id),d:e.d,t:e.t,p:e.p,km:+e.km||0,n:typeof e.n==='string'?e.n:''}});
     S.log=S.log.concat(add);
+    var hf={};S.fuel.forEach(function(e){hf[e.id]=1});
+    var addF=(Array.isArray(o.fuel)?o.fuel:[]).filter(function(e){return e&&e.id&&!hf[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&e.km>0&&e.l>0&&e.p>=0})
+      .map(function(e){return{id:String(e.id),d:e.d,km:+e.km,l:+e.l,p:+e.p,full:e.full!==false}});
+    S.fuel=S.fuel.concat(addF);
     if(o.budget&&Array.isArray(o.budget.rows))S.budget=o.budget;
-    save();renderLog();say($('ioMsg'),'Sauvegarde restaurée : '+add.length+' entretien'+(add.length>1?'s':'')+' ajouté'+(add.length>1?'s':'')+' (les doublons sont ignorés).');
+    save();renderLog();renderFuel();say($('ioMsg'),'Sauvegarde restaurée : '+add.length+' entretien'+(add.length>1?'s':'')+' et '+addF.length+' plein'+(addF.length>1?'s':'')+' ajoutés (les doublons sont ignorés).');
   }).catch(function(){say($('ioMsg'),'Ce fichier n\'est pas une sauvegarde du carnet d\'entretien.')});
+};
+
+/* ---------- fuel ---------- */
+function num(v){return parseFloat(String(v).replace(/[\s\u00a0\u202f€L]/gi,'').replace(',','.'))}
+function n1(x,d){return x.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function fuelAsc(){return S.fuel.slice().sort(function(a,b){return a.km-b.km||(a.d<b.d?-1:a.d>b.d?1:0)})}
+/* consumption from one full tank to the next: litres put in since the previous full tank
+   (partial fills included) over the distance driven */
+function fuelStats(){
+  var A=fuelAsc(),per={},firstFull=-1,lastFull=-1,prev=-1;
+  A.forEach(function(e,i){
+    if(!e.full)return;
+    if(prev>=0){
+      var L=0,P=0;for(var j=prev+1;j<=i;j++){L+=A[j].l;P+=A[j].p}
+      var dist=e.km-A[prev].km;if(dist>0)per[e.id]={c:L/dist*100,e:P/dist*100,km:dist};
+    }else firstFull=i;
+    prev=i;lastFull=i;
+  });
+  var st={A:A,per:per,L:0,P:0};
+  A.forEach(function(e){st.L+=e.l;st.P+=e.p});
+  // overall average: from the first full tank to the last one; with fewer than two full
+  // tanks, from the first fill to the last one (rough until a second full tank)
+  var a=firstFull,b=lastFull;st.rough=false;
+  if(!(a>=0&&b>a)){a=0;b=A.length-1;st.rough=true}
+  if(A.length>1&&b>a&&A[b].km>A[a].km){
+    var L=0,P=0;for(var j=a+1;j<=b;j++){L+=A[j].l;P+=A[j].p}
+    st.dist=A[b].km-A[a].km;st.avg=L/st.dist*100;st.c100=P/st.dist*100;
+  }
+  // driving pace: km per month from the fills when they cover a month or more,
+  // otherwise the yearly mileage set in the Budget tab
+  if(A.length>1){
+    var byD=A.slice().sort(function(x,y){return x.d<y.d?-1:x.d>y.d?1:x.km-y.km}),f=byD[0],l=byD[byD.length-1];
+    var days=(Date.parse(l.d)-Date.parse(f.d))/864e5;
+    if(days>=30&&l.km>f.km){st.pace=(l.km-f.km)/days*30.44;st.paceSrc='tes pleins'}
+  }
+  if(!st.pace&&S.budget.kmAn>0){st.pace=S.budget.kmAn/12;st.paceSrc='onglet Budget'}
+  if(st.c100!=null&&st.pace){st.mo=st.c100/100*st.pace;st.yr=st.mo*12}
+  return st;
+}
+var uEdit=null,uDel=null;
+function renderFuel(){
+  var st=fuelStats(),narrow=window.matchMedia('(max-width:600px)').matches;
+  $('uAvg').textContent=st.avg!=null?n1(st.avg,1)+' L/100':'–';
+  $('uC100').textContent=st.c100!=null?eur(st.c100,true):'–';
+  $('uMo').textContent=st.mo!=null?eur(st.mo):'–';
+  $('uTot').textContent=eur2(st.P);
+  $('uPL').textContent=st.L>0?eur(st.P/st.L,true).replace(/\s?€/,' €/L'):'–';
+  $('uLT').textContent=n1(st.L,st.L%1?1:0)+' L';
+  $('uKm').textContent=st.dist?st.dist.toLocaleString('fr-FR')+' km'+(st.rough?' (estimation)':''):'–';
+  $('uRy').textContent=st.pace?Math.round(st.pace).toLocaleString('fr-FR')+' km/mois ('+st.paceSrc+')':'–';
+  $('uAn').textContent=st.yr!=null?eur(st.yr):'–';
+  var rows=st.A.slice().reverse(),h='';
+  rows.forEach(function(e){
+    var c=st.per[e.id],pl=e.l>0?e.p/e.l:0;
+    h+='<tr'+(e.id===uEdit?' class="editing"':'')+'><td class="d">'+frDate(e.d)+(narrow?'<small>'+e.km.toLocaleString('fr-FR')+' km</small>':'')+
+      '</td><td class="n hk">'+e.km.toLocaleString('fr-FR')+'</td><td class="n">'+n1(e.l,2).replace(/,00$/,'')+' L</td><td class="n">'+eur2(e.p)+
+      '</td><td class="n hk">'+(pl?n1(pl,3):'')+'</td>'+
+      (c?'<td class="n"><b>'+n1(c.c,1)+'</b></td>':'<td class="n part">'+(e.full?(e===st.A[0]?'1er plein':'–'):'partiel')+'</td>')+
+      '<td class="act"><button data-ued="'+e.id+'" aria-label="Modifier" title="Modifier">✎</button><button data-udel="'+e.id+'" aria-label="Supprimer" title="Supprimer">×</button></td></tr>';
+  });
+  if(!rows.length)h='<tr><td colspan="7" class="empty">Aucun plein pour l\'instant. Ajoute le premier avec le formulaire ci-dessus : la moyenne apparaît dès le deuxième plein.</td></tr>';
+  $('utb').innerHTML=h;
+  $('uftL').textContent='Total ('+rows.length+' plein'+(rows.length>1?'s':'')+')';
+  $('uftL2').textContent=n1(st.L,st.L%1?1:0)+' L';
+  $('uftP').textContent=eur2(st.P);
+  $('uftA').textContent=st.avg!=null?n1(st.avg,1):'–';
+}
+window.matchMedia('(max-width:600px)').addEventListener('change',renderFuel);
+function uReset(){uEdit=null;$('ufrm').reset();$('uD').value=today();$('uF').checked=true;$('uB').textContent='Ajouter le plein';$('uC').classList.add('hide');$('uLive').textContent=''}
+$('uD').value=today();
+$('ufrm').addEventListener('input',function(){
+  var l=num($('uL').value),p=num($('uP').value),km=parseInt(String($('uK').value).replace(/\D/g,''),10),t='';
+  if(l>0&&p>0)t='Prix du litre : '+n1(p/l,3)+' €';
+  var prev=fuelAsc().filter(function(e){return e.id!==uEdit&&e.km<km}).pop();
+  if(prev&&km>prev.km)t+=(t?' · ':'')+(km-prev.km).toLocaleString('fr-FR')+' km depuis le plein du '+frDate(prev.d);
+  $('uLive').textContent=t;
+});
+$('ufrm').addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var d=$('uD').value,km=parseInt(String($('uK').value).replace(/\D/g,''),10),l=num($('uL').value),p=num($('uP').value),m=$('uMsg');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){say(m,'Indique une date.',true);return}
+  if(!(km>0)){say(m,'Indique le kilométrage du compteur.',true);return}
+  if(!(l>0)){say(m,'Indique le nombre de litres mis.',true);return}
+  if(!(p>=0)){say(m,'Indique le prix payé.',true);return}
+  var others=S.fuel.filter(function(e){return e.id!==uEdit});
+  if(others.some(function(e){return e.km===km})){say(m,'Il y a déjà un plein à '+km.toLocaleString('fr-FR')+' km.',true);return}
+  var before=others.filter(function(e){return e.d<=d&&e.km>km})[0],after=others.filter(function(e){return e.d>d&&e.km<km})[0];
+  if(before){say(m,'Le compteur doit dépasser celui du plein du '+frDate(before.d)+' ('+before.km.toLocaleString('fr-FR')+' km). Vérifie la date ou le kilométrage.',true);return}
+  if(after){say(m,'Le plein du '+frDate(after.d)+' a un kilométrage plus bas ('+after.km.toLocaleString('fr-FR')+' km). Vérifie la date ou le kilométrage.',true);return}
+  var e={id:uEdit||uid(),d:d,km:km,l:Math.round(l*100)/100,p:Math.round(p*100)/100,full:$('uF').checked};
+  if(uEdit)S.fuel=S.fuel.map(function(x){return x.id===uEdit?e:x});else S.fuel.push(e);
+  var was=uEdit;save();uReset();renderFuel();
+  var st=fuelStats(),c=st.per[e.id];
+  if(storeOk)say(m,(was?'Modifié':'Ajouté')+' : '+n1(e.l,2).replace(/,00$/,'')+' L pour '+eur2(e.p)+(c?' · '+n1(c.c,1)+' L/100 km depuis le plein complet précédent':'')+'.');
+});
+$('uC').onclick=function(){uReset();renderFuel();say($('uMsg'),'')};
+$('utb').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  var id=b.getAttribute('data-ued');
+  if(id){
+    var e=S.fuel.filter(function(x){return x.id===id})[0];if(!e)return;
+    uEdit=id;$('uD').value=e.d;$('uK').value=e.km;$('uL').value=String(e.l).replace('.',',');$('uP').value=String(e.p).replace('.',',');$('uF').checked=e.full;
+    $('uB').textContent='Enregistrer la modification';$('uC').classList.remove('hide');
+    say($('uMsg'),'Modification du plein du '+frDate(e.d)+'.');renderFuel();
+    $('ufrm').scrollIntoView({behavior:'smooth',block:'start'});return;
+  }
+  id=b.getAttribute('data-udel');if(!id)return;
+  if(uDel&&uDel.id===id){
+    clearTimeout(uDel.t);uDel=null;
+    S.fuel=S.fuel.filter(function(x){return x.id!==id});if(uEdit===id)uReset();
+    save();renderFuel();say($('uMsg'),'Plein supprimé.');return;
+  }
+  if(uDel){clearTimeout(uDel.t);renderFuel()}
+  b=document.querySelector('button[data-udel="'+id+'"]');b.textContent='Supprimer ?';b.classList.add('sure');
+  uDel={id:id,t:setTimeout(function(){uDel=null;renderFuel()},3000)};
+});
+$('uCsv').onclick=function(){
+  if(!S.fuel.length){say($('uMsg'),'Rien à exporter pour l\'instant.');return}
+  var st=fuelStats(),f=function(x,d){return x.toFixed(d).replace('.',',')};
+  var out=['Date;Kilométrage;Litres;Prix (€);Prix du litre (€);Plein complet;L/100 km'];
+  st.A.forEach(function(e){var c=st.per[e.id];out.push([frDate(e.d),e.km,f(e.l,2),f(e.p,2),f(e.p/e.l,3),e.full?'oui':'non',c?f(c.c,2):''].join(';'))});
+  out.push(';Total;'+f(st.L,2)+';'+f(st.P,2)+';;;'+(st.avg!=null?f(st.avg,2):''));
+  download('essence-insignia-opc-'+today()+'.csv','text/csv;charset=utf-8','\ufeff'+out.join('\r\n'));
+  say($('uMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
 };
 
 /* ---------- forecast budget (from the "Budget entretien" artifact) ---------- */
@@ -363,7 +579,7 @@ function calcBudget(){
   $('tY').textContent=eur(tot);$('tM').textContent=eur(tot/12);
   $('tK').textContent=B.kmAn>0?eur(tot/B.kmAn*100,true):'–';
 }
-$('kmAn').addEventListener('input',function(e){B.kmAn=parseFloat(e.target.value)||0;save();calcBudget()});
+$('kmAn').addEventListener('input',function(e){B.kmAn=parseFloat(e.target.value)||0;save();calcBudget();renderFuel()});
 $('list').addEventListener('input',function(e){
   var t=e.target,i=t.getAttribute('data-i'),f=t.getAttribute('data-f');if(i===null)return;
   B.rows[i][f]=f==='n'?t.value:(parseFloat(t.value)||0);save();calcBudget();
@@ -381,7 +597,19 @@ $('rst').onclick=function(){
   rt=setTimeout(function(){rt=null;rb.textContent='Réinitialiser le budget'},3000);
 };
 
-renderLog();
+/* ---------- intro: once each time the app is opened ---------- */
+(function(){
+  var seen=false;try{seen=sessionStorage.getItem(K+'.intro')==='1';sessionStorage.setItem(K+'.intro','1')}catch(e){}
+  if(seen||/[?&]nointro\b/.test(location.search))return;
+  var el=$('intro');el.classList.remove('hide');
+  function end(){if(el.parentNode)el.remove()}
+  el.addEventListener('animationend',function(ev){if(ev.target===el)end()});
+  el.addEventListener('click',end);
+  document.addEventListener('keydown',end,{once:true});
+  setTimeout(end,4000);
+})();
+
+renderLog();renderFuel();
 var t0='log';try{t0=localStorage.getItem(K+'.tab')||'log'}catch(e){}
 tab(t0);
 
