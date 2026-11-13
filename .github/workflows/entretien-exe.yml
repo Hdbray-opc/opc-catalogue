@@ -1,0 +1,42 @@
+# Builds the Windows version of the maintenance log (Carnet entretien OPC, a portable .exe)
+# and publishes it as a GitHub release, ready to download.
+name: Carnet entretien – application Windows
+on:
+  push:
+    paths: ['entretien/**', 'desktop/**', '.github/workflows/entretien-exe.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Carnet-entretien-OPC-windows
+          path: desktop/dist/*.exe
+      - id: v
+        shell: bash
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: entretien-v${{ steps.v.outputs.version }}
+          name: Carnet entretien OPC ${{ steps.v.outputs.version }} (Windows)
+          target_commitish: ${{ github.sha }}
+          body: |
+            Application Windows du carnet d'entretien de l'Insignia OPC.
+            Télécharger le fichier .exe ci-dessous puis le lancer (aucune installation).
+            Si Windows affiche « Windows a protégé votre ordinateur » : Informations complémentaires › Exécuter quand même.
+          files: desktop/dist/*.exe
+          make_latest: false

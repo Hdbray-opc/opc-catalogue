@@ -1,0 +1,16 @@
+{
+ "name": "Carnet d'entretien – Insignia OPC",
+ "short_name": "Entretien OPC",
+ "lang": "fr",
+ "id": "./",
+ "start_url": "./index.html",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#12161d",
+ "theme_color": "#1b2230",
+ "icons": [
+  {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+  {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+  {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+ ]
+}

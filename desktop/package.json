@@ -1,0 +1,25 @@
+{
+  "name": "carnet-entretien-opc",
+  "productName": "Carnet entretien OPC",
+  "version": "1.0.0",
+  "description": "Carnet d'entretien et budget de l'Insignia OPC",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "copy": "node -e \"require('fs').cpSync('../entretien','app',{recursive:true})\"",
+    "start": "npm run copy && electron .",
+    "dist": "npm run copy && electron-builder --win portable --x64"
+  },
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "io.github.hdbray-opc.entretien",
+    "productName": "Carnet entretien OPC",
+    "files": ["main.js", "app/**/*"],
+    "directories": {"output": "dist"},
+    "win": {"target": "portable", "icon": "app/icon-512.png"},
+    "portable": {"artifactName": "Carnet-entretien-OPC-${version}.exe"}
+  }
+}
