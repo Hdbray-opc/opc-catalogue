@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet d'entretien – Insignia OPC</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b2230">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Entretien OPC">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+@font-face{font-family:Archivo;font-weight:400;font-display:swap;src:url(fonts/Archivo-400.woff2) format('woff2')}
+@font-face{font-family:Archivo;font-weight:600;font-display:swap;src:url(fonts/Archivo-600.woff2) format('woff2')}
+@font-face{font-family:'Archivo Narrow';font-weight:700;font-display:swap;src:url(fonts/ArchivoNarrow-700.woff2) format('woff2')}
+:root{--bg:#eceff2;--card:#fff;--ink:#1b2230;--mute:#667085;--line:#d5dae1;--acc:#f2c200;--inp:#f3f5f8;--no:#c0392b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161d;--card:#1c222c;--ink:#eef0f4;--mute:#9aa3b2;--line:#2f3744;--inp:#141922;--no:#ff8a80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12161d;--card:#1c222c;--ink:#eef0f4;--mute:#9aa3b2;--line:#2f3744;--inp:#141922;--no:#ff8a80;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.4 Archivo,system-ui,sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.w{max-width:820px;margin:0 auto;padding:16px 16px 48px}
+h1{font:700 28px/1.1 "Archivo Narrow",Archivo,sans-serif;margin:6px 0 2px}
+.sub{color:var(--mute);margin:0 0 14px}
+nav{display:flex;gap:6px;margin-bottom:14px}
+nav button{flex:1;font:600 15px Archivo,system-ui,sans-serif;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sum{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--acc);color:#1b2230;border-radius:10px;padding:12px 14px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
+.sum div{display:flex;flex-direction:column}
+.sum small{font-size:12px;opacity:.8}
+.sum b{font:700 26px/1 "Archivo Narrow",Archivo,sans-serif;font-variant-numeric:tabular-nums}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+input,select{font:inherit;color:var(--ink);background:var(--inp);border:1px solid var(--line);border-radius:6px;padding:8px;min-width:0;width:100%}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.frm{display:grid;grid-template-columns:160px 130px 130px 1fr;gap:8px}
+.frm label{font-size:12px;color:var(--mute);display:flex;flex-direction:column;gap:3px}
+.frm .op{grid-column:2/-1}
+.frm .nt{grid-column:3/-1}
+.btns{grid-column:1/-1;display:flex;gap:8px}
+.pri{flex:1;font:600 15px Archivo,system-ui,sans-serif;background:var(--acc);color:#1b2230;border:0;border-radius:8px;padding:11px;cursor:pointer}
+.sec{font:inherit;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer}
+#fMsg{grid-column:1/-1;color:var(--mute);font-size:13px;min-height:1em}
+#fMsg.err{color:var(--no)}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:16px 0 8px}
+.bar h2{font:700 20px/1 "Archivo Narrow",Archivo,sans-serif;margin:0;flex:1}
+.bar select{width:auto}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.04em;background:var(--inp)}
+td.n,th.n{text-align:right;white-space:nowrap}
+td.d{white-space:nowrap}
+td small{display:block;color:var(--mute);font-size:12.5px}
+tfoot td{font-weight:600;border-bottom:0;background:var(--inp)}
+tfoot td.n{font:700 18px "Archivo Narrow",Archivo,sans-serif}
+tr.yr td{background:var(--bg);font-weight:600;color:var(--mute);font-size:13px;padding:6px 10px}
+.act{white-space:nowrap;width:1%}
+.act button{border:0;background:none;color:var(--mute);font-size:17px;line-height:1;cursor:pointer;padding:4px 6px;border-radius:6px}
+.act button:hover{background:var(--inp);color:var(--ink)}
+.act button.sure{color:var(--no);font-size:13px;font-weight:600}
+tr.editing td{background:color-mix(in srgb,var(--acc) 18%,var(--card))}
+.empty{color:var(--mute);text-align:center;padding:22px 10px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.note{color:var(--mute);font-size:13px;margin-top:12px}
+.hide{display:none!important}
+/* budget tab (from the "Budget entretien" artifact) */
+.km{display:flex;align-items:center;gap:10px}
+.km input{width:110px}
+h3{font:700 20px/1 "Archivo Narrow",Archivo,sans-serif;display:flex;justify-content:space-between;align-items:baseline;margin:22px 2px 8px;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-size:15px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}
+.top{display:flex;gap:6px}
+.nm{flex:1;font-weight:600}
+.x{border:0;background:none;color:var(--mute);font-size:22px;line-height:1;cursor:pointer;padding:0 8px}
+.f{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.f label{font-size:12px;color:var(--mute);display:flex;flex-direction:column;gap:2px}
+.res{display:flex;justify-content:space-between;margin-top:8px;color:var(--mute);font-size:13px}
+.res b{color:var(--ink);font-size:15px}
+.add{font:inherit;border:1px dashed var(--mute);background:none;color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer}
+@media (max-width:600px){
+  .frm{grid-template-columns:1fr 1fr}
+  .frm .op,.frm .nt{grid-column:1/-1}
+  .frm .dt{grid-column:1/-1}
+  .hk{display:none}
+  th,td{padding:8px 6px}
+  .sum{gap:12px}.sum b{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Carnet d'entretien – Insignia OPC</h1>
+<p class="sub">2.8 V6 Turbo 325 ch, 4x4, 2014</p>
+<nav role="tablist">
+<button role="tab" id="tabLog" aria-selected="true" aria-controls="pLog">Mes entretiens</button>
+<button role="tab" id="tabBud" aria-selected="false" aria-controls="pBud">Budget prévisionnel</button>
+</nav>
+
+<section id="pLog" role="tabpanel" aria-labelledby="tabLog">
+<div class="sum">
+<div><small id="lTotL">Total dépensé</small><b id="lTot">–</b></div>
+<div><small id="lYrL">Cette année</small><b id="lYr">–</b></div>
+<div><small>Opérations</small><b id="lCnt">–</b></div>
+</div>
+
+<form class="card frm" id="frm" autocomplete="off">
+<label class="dt">Date<input id="fD" type="date" required></label>
+<label class="op">Type d'opération<input id="fT" list="types" placeholder="Ex. Vidange huile + filtre" required><datalist id="types"></datalist></label>
+<label>Prix €<input id="fP" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0,00" required></label>
+<label>Kilométrage<input id="fK" type="number" inputmode="numeric" min="0" placeholder="Facultatif"></label>
+<label class="nt">Note<input id="fN" placeholder="Garage, pièces, référence… (facultatif)"></label>
+<div class="btns"><button class="pri" id="fB" type="submit">Ajouter l'entretien</button><button class="sec hide" id="fC" type="button">Annuler</button></div>
+<div id="fMsg" role="status"></div>
+</form>
+
+<div class="bar"><h2>Historique</h2>
+<select id="yrSel" aria-label="Filtrer par année"></select></div>
+<table>
+<thead><tr><th>Date</th><th>Opération</th><th class="n hk">Km</th><th class="n">Prix</th><th class="act"><span class="hide">Actions</span></th></tr></thead>
+<tbody id="tb"></tbody>
+<tfoot><tr><td colspan="2" id="ftL">Total</td><td class="hk"></td><td class="n" id="ftT">–</td><td></td></tr></tfoot>
+</table>
+
+<div class="tools">
+<button class="sec" id="xCsv">Exporter pour Excel (.csv)</button>
+<button class="sec" id="xJson">Sauvegarder (.json)</button>
+<button class="sec" id="iJson">Restaurer une sauvegarde</button>
+<input type="file" id="iFile" accept=".json,application/json" class="hide">
+</div>
+<p class="note" id="ioMsg" role="status"></p>
+<p class="note">Tes entretiens restent sur cet appareil. Fais une sauvegarde de temps en temps : elle se restaure aussi bien sur le téléphone que sur l'ordinateur.</p>
+</section>
+
+<section id="pBud" role="tabpanel" aria-labelledby="tabBud" class="hide">
+<div class="sum">
+<div><small>Par an</small><b id="tY">–</b></div>
+<div><small>Par mois</small><b id="tM">–</b></div>
+<div><small>Pour 100 km</small><b id="tK">–</b></div>
+</div>
+<div class="card km"><label for="kmAn">Kilométrage annuel</label><input id="kmAn" type="number" inputmode="numeric"><span>km</span></div>
+<div id="list"></div>
+<p class="note">Une ligne revient quand l'intervalle en km ou en mois est atteint, le plus court des deux. Laisse 0 pour ignorer un critère. Les montants sont des estimations de pièces commandées en ligne, sans main-d'œuvre.</p>
+<button class="sec" id="rst">Réinitialiser le budget</button>
+</section>
+</div>
+
+<script>
+(function(){
+'use strict';
+var K='opc-entretien-v1';
+var D=[
+["Entretien courant","Vidange huile + filtre",10000,12,95],
+["Entretien courant","Huile d'appoint entre vidanges (2 L)",10000,0,25],
+["Entretien courant","Filtre à air",30000,24,32],
+["Entretien courant","Filtre d'habitacle",15000,12,20],
+["Entretien courant","Bougies (6)",60000,0,125],
+["Entretien courant","Bobines (jeu de 6, provision)",100000,0,220],
+["Entretien courant","Liquide de frein",0,24,20],
+["Entretien courant","Liquide de refroidissement",0,60,55],
+["Entretien courant","Huile de boîte",90000,0,100],
+["Entretien courant","Haldex, différentiel arrière, transfert",40000,24,120],
+["Freins","Disques + plaquettes avant (355 mm)",50000,0,330],
+["Freins","Disques + plaquettes arrière (315 mm)",70000,0,170],
+["Liaison au sol","Amortisseurs pilotés (4)",120000,0,1700],
+["Liaison au sol","Bras avant + silentblocs",80000,0,200],
+["Liaison au sol","Biellettes et divers",60000,0,60],
+["Liaison au sol","Roulements de roue",100000,0,140],
+["Liaison au sol","Géométrie",30000,24,0],
+["Pneus","4 pneus 245/45 R19 posés",35000,0,900],
+["Provisions","Chaîne de distribution + tendeurs",150000,0,400],
+["Provisions","Pompe à eau + thermostat",120000,0,180],
+["Provisions","Turbo (échange)",250000,0,1000],
+["Provisions","Embrayage + volant bimasse (si manuelle)",180000,0,850],
+["Provisions","Batterie AGM",0,60,200],
+["Provisions","Fuites d'huile et divers",0,36,150],
+["Provisions","Vase d'expansion + bouchon",100000,0,60],
+["Provisions","Contrôle technique",0,24,0]
+];
+function defBudget(){return{kmAn:15000,rows:D.map(function(r){return{c:r[0],n:r[1],km:r[2],mo:r[3],p:r[4]}})}}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function eur(n,dec){return n.toLocaleString('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:dec?2:0,maximumFractionDigits:dec?2:0})}
+function eur2(n){return eur(n,Math.round(n*100)%100!==0)}
+function today(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+function frDate(s){var p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0]}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+var S=null;
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(!S||typeof S!=='object')S={};
+if(!Array.isArray(S.log))S.log=[];
+if(!S.budget||!Array.isArray(S.budget.rows))S.budget=defBudget();
+var storeOk=true;
+function save(){try{localStorage.setItem(K,JSON.stringify(S));storeOk=true}catch(e){storeOk=false;say($('fMsg'),"Enregistrement impossible sur cet appareil (stockage plein ou bloqué).",true)}}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+function say(el,t,err){el.textContent=t;el.className=el.id==='fMsg'?(err?'err':''):'note'}
+
+/* ---------- tabs ---------- */
+function tab(which){
+  var log=which!=='bud';
+  $('tabLog').setAttribute('aria-selected',log);$('tabBud').setAttribute('aria-selected',!log);
+  $('pLog').classList.toggle('hide',!log);$('pBud').classList.toggle('hide',log);
+  try{localStorage.setItem(K+'.tab',which)}catch(e){}
+  if(!log)renderBudget();
+}
+$('tabLog').onclick=function(){tab('log')};
+$('tabBud').onclick=function(){tab('bud')};
+
+/* ---------- maintenance log ---------- */
+var editId=null,yrFilter='all',delArm=null;
+function sorted(){return S.log.slice().sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:(b.km||0)-(a.km||0)})}
+function years(){var o={};S.log.forEach(function(e){o[e.d.slice(0,4)]=1});return Object.keys(o).sort().reverse()}
+function renderLog(){
+  var ys=years(),thisY=today().slice(0,4);
+  if(yrFilter!=='all'&&ys.indexOf(yrFilter)<0)yrFilter='all';
+  $('yrSel').innerHTML='<option value="all">Toutes les années</option>'+ys.map(function(y){return '<option value="'+y+'"'+(y===yrFilter?' selected':'')+'>'+y+'</option>'}).join('');
+  var rows=sorted().filter(function(e){return yrFilter==='all'||e.d.slice(0,4)===yrFilter});
+  var h='',cur=null,ySum={};
+  rows.forEach(function(e){var y=e.d.slice(0,4);ySum[y]=(ySum[y]||0)+e.p});
+  rows.forEach(function(e){
+    var y=e.d.slice(0,4);
+    if(yrFilter==='all'&&y!==cur&&ys.length>1){cur=y;h+='<tr class="yr"><td colspan="3" class="yh">'+y+'</td><td class="n">'+eur2(ySum[y])+'</td><td></td></tr>'}
+    h+='<tr data-id="'+e.id+'"'+(e.id===editId?' class="editing"':'')+'><td class="d">'+frDate(e.d)+'</td><td>'+esc(e.t)+
+      (e.km?'<small class="km-m">'+e.km.toLocaleString('fr-FR')+' km</small>':'')+
+      (e.n?'<small>'+esc(e.n)+'</small>':'')+'</td><td class="n hk">'+(e.km?e.km.toLocaleString('fr-FR'):'')+'</td><td class="n">'+eur2(e.p)+
+      '</td><td class="act"><button data-ed="'+e.id+'" aria-label="Modifier" title="Modifier">✎</button><button data-del="'+e.id+'" aria-label="Supprimer" title="Supprimer">×</button></td></tr>';
+  });
+  if(!rows.length)h='<tr><td colspan="5" class="empty">Aucun entretien pour l\'instant. Ajoute le premier avec le formulaire ci-dessus.</td></tr>';
+  $('tb').innerHTML=h;
+  // the km sub-line is only for narrow screens where the km column is hidden
+  var narrow=window.matchMedia('(max-width:600px)').matches;
+  Array.prototype.forEach.call(document.querySelectorAll('.km-m'),function(x){x.classList.toggle('hide',!narrow)});
+  if(narrow)Array.prototype.forEach.call(document.querySelectorAll('tr.yr td.yh'),function(td){td.colSpan=2});
+  var fTot=rows.reduce(function(s,e){return s+e.p},0);
+  $('ftL').textContent=yrFilter==='all'?'Total ('+rows.length+' opération'+(rows.length>1?'s':'')+')':'Total '+yrFilter+' ('+rows.length+')';
+  $('ftT').textContent=eur2(fTot);
+  var all=S.log.reduce(function(s,e){return s+e.p},0);
+  var yr=S.log.filter(function(e){return e.d.slice(0,4)===thisY}).reduce(function(s,e){return s+e.p},0);
+  $('lTot').textContent=eur2(all);
+  $('lYrL').textContent='En '+thisY;
+  $('lYr').textContent=eur2(yr);
+  $('lCnt').textContent=S.log.length;
+  var t={};S.budget.rows.forEach(function(r){t[r.n]=1});S.log.forEach(function(e){t[e.t]=1});
+  $('types').innerHTML=Object.keys(t).sort(function(a,b){return a.localeCompare(b,'fr')}).map(function(n){return '<option value="'+esc(n)+'">'}).join('');
+}
+window.matchMedia('(max-width:600px)').addEventListener('change',renderLog);
+function resetForm(){
+  editId=null;$('frm').reset();$('fD').value=today();
+  $('fB').textContent="Ajouter l'entretien";$('fC').classList.add('hide');
+}
+$('fD').value=today();
+$('frm').addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var d=$('fD').value,t=$('fT').value.trim(),p=parseFloat(String($('fP').value).replace(',','.')),km=parseInt($('fK').value,10),n=$('fN').value.trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){say($('fMsg'),'Indique une date.',true);return}
+  if(!t){say($('fMsg'),"Indique le type d'opération.",true);return}
+  if(!(p>=0)){say($('fMsg'),'Indique un prix (0 si gratuit).',true);return}
+  var e={id:editId||uid(),d:d,t:t,p:Math.round(p*100)/100,km:km>0?km:0,n:n};
+  var msg;
+  if(editId){S.log=S.log.map(function(x){return x.id===editId?e:x});msg='Modifié : '+t+'.'}
+  else{S.log.push(e);msg='Ajouté : '+t+' le '+frDate(d)+' pour '+eur2(e.p)+'.'}
+  save();resetForm();renderLog();if(storeOk)say($('fMsg'),msg);
+});
+$('fC').onclick=function(){resetForm();renderLog();say($('fMsg'),'')};
+$('yrSel').onchange=function(){yrFilter=this.value;renderLog()};
+$('tb').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  var id=b.getAttribute('data-ed');
+  if(id){
+    var e=S.log.filter(function(x){return x.id===id})[0];if(!e)return;
+    editId=id;$('fD').value=e.d;$('fT').value=e.t;$('fP').value=e.p;$('fK').value=e.km||'';$('fN').value=e.n||'';
+    $('fB').textContent='Enregistrer la modification';$('fC').classList.remove('hide');
+    say($('fMsg'),'Modification de « '+e.t+' » du '+frDate(e.d)+'.');renderLog();
+    $('frm').scrollIntoView({behavior:'smooth',block:'start'});$('fT').focus({preventScroll:true});
+    return;
+  }
+  id=b.getAttribute('data-del');if(!id)return;
+  if(delArm&&delArm.id===id){
+    clearTimeout(delArm.t);delArm=null;
+    var gone=S.log.filter(function(x){return x.id===id})[0];
+    S.log=S.log.filter(function(x){return x.id!==id});if(editId===id)resetForm();
+    save();renderLog();if(gone)say($('fMsg'),'Supprimé : '+gone.t+' du '+frDate(gone.d)+'.');
+    return;
+  }
+  if(delArm){clearTimeout(delArm.t);renderLog()}
+  b=document.querySelector('button[data-del="'+id+'"]');
+  b.textContent='Supprimer ?';b.classList.add('sure');
+  delArm={id:id,t:setTimeout(function(){delArm=null;renderLog()},3000)};
+});
+
+/* ---------- export / import ---------- */
+function download(name,type,text){
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:type}));a.download=name;
+  document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
+}
+$('xCsv').onclick=function(){
+  if(!S.log.length){say($('ioMsg'),'Rien à exporter pour l\'instant.');return}
+  function c(v){v=String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+  var rows=sorted().reverse(),tot=0;
+  var out=['Date;Opération;Kilométrage;Prix (€);Note'];
+  rows.forEach(function(e){tot+=e.p;out.push([frDate(e.d),c(e.t),e.km||'',e.p.toFixed(2).replace('.',','),c(e.n||'')].join(';'))});
+  out.push(';Total;;'+tot.toFixed(2).replace('.',',')+';');
+  download('entretien-insignia-opc-'+today()+'.csv','text/csv;charset=utf-8','﻿'+out.join('\r\n'));
+  say($('ioMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
+};
+$('xJson').onclick=function(){
+  download('sauvegarde-entretien-opc-'+today()+'.json','application/json',JSON.stringify({app:'opc-entretien',v:1,saved:new Date().toISOString(),log:S.log,budget:S.budget},null,1));
+  say($('ioMsg'),'Sauvegarde créée : '+S.log.length+' entretien'+(S.log.length>1?'s':'')+' et le budget.');
+};
+$('iJson').onclick=function(){$('iFile').click()};
+$('iFile').onchange=function(){
+  var f=this.files&&this.files[0];this.value='';if(!f)return;
+  f.text().then(function(txt){
+    var o=JSON.parse(txt);
+    if(!o||o.app!=='opc-entretien'||!Array.isArray(o.log))throw new Error('format');
+    var have={};S.log.forEach(function(e){have[e.id]=1});
+    var add=o.log.filter(function(e){return e&&e.id&&!have[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&typeof e.t==='string'&&typeof e.p==='number'})
+      .map(function(e){return{id:String(e.id),d:e.d,t:e.t,p:e.p,km:+e.km||0,n:typeof e.n==='string'?e.n:''}});
+    S.log=S.log.concat(add);
+    if(o.budget&&Array.isArray(o.budget.rows))S.budget=o.budget;
+    save();renderLog();say($('ioMsg'),'Sauvegarde restaurée : '+add.length+' entretien'+(add.length>1?'s':'')+' ajouté'+(add.length>1?'s':'')+' (les doublons sont ignorés).');
+  }).catch(function(){say($('ioMsg'),'Ce fichier n\'est pas une sauvegarde du carnet d\'entretien.')});
+};
+
+/* ---------- forecast budget (from the "Budget entretien" artifact) ---------- */
+var B=S.budget;
+function cats(){var o=[];B.rows.forEach(function(r){if(o.indexOf(r.c)<0)o.push(r.c)});return o}
+function occ(r){var a=r.km>0?B.kmAn/r.km:0,b=r.mo>0?12/r.mo:0;return Math.max(a,b)}
+function fld(i,f,t,v){return '<label>'+t+'<input type="number" inputmode="decimal" min="0" data-i="'+i+'" data-f="'+f+'" value="'+v+'"></label>'}
+function renderBudget(){
+  B=S.budget;$('kmAn').value=B.kmAn;
+  var h='';
+  cats().forEach(function(c,ci){
+    h+='<h3>'+esc(c)+'<span id="s'+ci+'"></span></h3>';
+    B.rows.forEach(function(r,i){
+      if(r.c!==c)return;
+      h+='<div class="row"><div class="top"><input class="nm" data-i="'+i+'" data-f="n" value="'+esc(r.n)+'" aria-label="Nom"><button class="x" data-del="'+i+'" aria-label="Supprimer la ligne">×</button></div>'+
+        '<div class="f">'+fld(i,'km','Tous les km',r.km)+fld(i,'mo','ou mois',r.mo)+fld(i,'p','Coût pièces €',r.p)+
+        '</div><div class="res"><span>Coût d\'une fois <b id="u'+i+'"></b></span><span>Par an <b id="a'+i+'"></b></span></div></div>';
+    });
+    h+='<button class="add" data-add="'+esc(c)+'">+ Ajouter une ligne</button>';
+  });
+  $('list').innerHTML=h;calcBudget();
+}
+function calcBudget(){
+  var tot=0,sub={};
+  B.rows.forEach(function(r,i){
+    var a=r.p*occ(r);tot+=a;sub[r.c]=(sub[r.c]||0)+a;
+    var eu=$('u'+i),ea=$('a'+i);if(eu)eu.textContent=eur(r.p);if(ea)ea.textContent=eur(a);
+  });
+  cats().forEach(function(c,ci){var e=$('s'+ci);if(e)e.textContent=eur(sub[c]||0)+' par an'});
+  $('tY').textContent=eur(tot);$('tM').textContent=eur(tot/12);
+  $('tK').textContent=B.kmAn>0?eur(tot/B.kmAn*100,true):'–';
+}
+$('kmAn').addEventListener('input',function(e){B.kmAn=parseFloat(e.target.value)||0;save();calcBudget()});
+$('list').addEventListener('input',function(e){
+  var t=e.target,i=t.getAttribute('data-i'),f=t.getAttribute('data-f');if(i===null)return;
+  B.rows[i][f]=f==='n'?t.value:(parseFloat(t.value)||0);save();calcBudget();
+});
+$('list').addEventListener('click',function(e){
+  var t=e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-del')){B.rows.splice(+t.getAttribute('data-del'),1);save();renderBudget()}
+  else if(t.hasAttribute('data-add')){B.rows.push({c:t.getAttribute('data-add'),n:'Nouvelle ligne',km:0,mo:12,p:0});save();renderBudget()}
+});
+var rt=null;
+$('rst').onclick=function(){
+  var rb=this;
+  if(rt){clearTimeout(rt);rt=null;S.budget=defBudget();save();rb.textContent='Réinitialiser le budget';renderBudget();return}
+  rb.textContent='Appuie encore pour confirmer';
+  rt=setTimeout(function(){rt=null;rb.textContent='Réinitialiser le budget'},3000);
+};
+
+renderLog();
+var t0='log';try{t0=localStorage.getItem(K+'.tab')||'log'}catch(e){}
+tab(t0);
+
+/* offline on the phone (not needed in the Windows app, which loads local files) */
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+}
+})();
+</script>
+</body>
+</html>
