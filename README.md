@@ -27,5 +27,6 @@ Même application que le carnet de l'Insignia (dossier `e2008/`, sans clé de li
 
 - Recharges : on n'entre que le prix payé et le kilométrage du compteur. L'app calcule la distance depuis la recharge précédente, le coût aux 100 km, les kWh/100 km (estimés avec un prix moyen du kWh réglable) et l'équivalent en L/100 km (1 L d'essence ≈ 8,9 kWh).
 - Téléphone : ouvrir https://hdbray-opc.github.io/opc-catalogue/e2008/ puis l'ajouter à l'écran d'accueil (même méthode que ci-dessus). Fonctionne hors ligne.
+- Windows : télécharger `Carnet-entretien-E-2008-x.y.z.exe` dans les *Releases* du dépôt (construit par `.github/workflows/e2008-exe.yml` depuis le dossier `desktop-e2008/`).
 
 Les données restent sur l'appareil ; les boutons *Sauvegarder* / *Restaurer* permettent de passer du téléphone à l'ordinateur.
