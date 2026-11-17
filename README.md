@@ -20,3 +20,12 @@ Application séparée du catalogue (dossier `entretien/`, sans clé de licence) 
 - Windows : télécharger `Carnet-entretien-OPC-x.y.z.exe` dans les *Releases* du dépôt (construit par `.github/workflows/entretien-exe.yml` depuis le dossier `desktop/`).
 
 Les entretiens restent sur l'appareil ; les boutons *Sauvegarder* / *Restaurer* permettent de passer du téléphone à l'ordinateur.
+
+## Carnet d'entretien – Peugeot E-2008
+
+Même application que le carnet de l'Insignia (dossier `e2008/`, sans clé de licence), adaptée à la Peugeot E-2008 phase 2 électrique (156 ch, batterie 54 kWh) et en vert lime : tableau des entretiens, onglet **Recharges**, budget prévisionnel d'une électrique et fiche du véhicule décodée depuis le VIN.
+
+- Recharges : on n'entre que le prix payé et le kilométrage du compteur. L'app calcule la distance depuis la recharge précédente, le coût aux 100 km, les kWh/100 km (estimés avec un prix moyen du kWh réglable) et l'équivalent en L/100 km (1 L d'essence ≈ 8,9 kWh).
+- Téléphone : ouvrir https://hdbray-opc.github.io/opc-catalogue/e2008/ puis l'ajouter à l'écran d'accueil (même méthode que ci-dessus). Fonctionne hors ligne.
+
+Les données restent sur l'appareil ; les boutons *Sauvegarder* / *Restaurer* permettent de passer du téléphone à l'ordinateur.
