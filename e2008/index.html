@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet d'entretien – Peugeot E-2008</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b2230">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Entretien E-2008">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+/* Fonts are shared with the Insignia log (../entretien/fonts) */
+@font-face{font-family:Archivo;font-weight:400;font-display:swap;src:url(../entretien/fonts/Archivo-400.woff2) format('woff2')}
+@font-face{font-family:Archivo;font-weight:600;font-display:swap;src:url(../entretien/fonts/Archivo-600.woff2) format('woff2')}
+@font-face{font-family:'Archivo Narrow';font-weight:700;font-display:swap;src:url(../entretien/fonts/ArchivoNarrow-700.woff2) format('woff2')}
+:root{--bg:#eceff2;--card:#fff;--ink:#1b2230;--mute:#667085;--line:#d5dae1;--acc:#c4ec1b;--edge:#6f8a00;--inp:#f3f5f8;--no:#c0392b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161d;--card:#1c222c;--ink:#eef0f4;--mute:#9aa3b2;--line:#2f3744;--inp:#141922;--edge:#c4ec1b;--no:#ff8a80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12161d;--card:#1c222c;--ink:#eef0f4;--mute:#9aa3b2;--line:#2f3744;--inp:#141922;--edge:#c4ec1b;--no:#ff8a80;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.4 Archivo,system-ui,sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.w{max-width:820px;margin:0 auto;padding:16px 16px 48px}
+h1{font:700 28px/1.1 "Archivo Narrow",Archivo,sans-serif;margin:6px 0 2px}
+.sub{color:var(--mute);margin:0 0 14px}
+nav{display:flex;gap:6px;margin-bottom:14px}
+nav button{flex:1;font:600 15px Archivo,system-ui,sans-serif;padding:10px 4px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sum{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--acc);color:#1b2230;border-radius:10px;padding:12px 14px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
+.sum div{display:flex;flex-direction:column}
+.sum small{font-size:12px;opacity:.8}
+.sum b{font:700 26px/1 "Archivo Narrow",Archivo,sans-serif;font-variant-numeric:tabular-nums}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+input,select{font:inherit;color:var(--ink);background:var(--inp);border:1px solid var(--line);border-radius:6px;padding:8px;min-width:0;width:100%}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--edge);outline-offset:1px}
+.frm{display:grid;grid-template-columns:160px 130px 130px 1fr;gap:8px}
+.frm label{font-size:12px;color:var(--mute);display:flex;flex-direction:column;gap:3px}
+.frm .op{grid-column:2/-1}
+.frm .nt{grid-column:3/-1}
+.btns{grid-column:1/-1;display:flex;gap:8px}
+.pri{flex:1;font:600 15px Archivo,system-ui,sans-serif;background:var(--acc);color:#1b2230;border:0;border-radius:8px;padding:11px;cursor:pointer}
+.sec{font:inherit;border:1px solid var(--line);background:none;color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer}
+#fMsg,#uMsg{grid-column:1/-1;color:var(--mute);font-size:13px;min-height:1em}
+#fMsg.err,#uMsg.err{color:var(--no)}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:16px 0 8px}
+.bar h2{font:700 20px/1 "Archivo Narrow",Archivo,sans-serif;margin:0;flex:1}
+.bar select{width:auto}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.04em;background:var(--inp)}
+td.n,th.n{text-align:right;white-space:nowrap}
+td.d{white-space:nowrap}
+td small{display:block;color:var(--mute);font-size:12.5px}
+tfoot td{font-weight:600;border-bottom:0;background:var(--inp)}
+tfoot td.n{font:700 18px "Archivo Narrow",Archivo,sans-serif}
+tr.yr td{background:var(--bg);font-weight:600;color:var(--mute);font-size:13px;padding:6px 10px}
+.act{white-space:nowrap;width:1%}
+.act button{border:0;background:none;color:var(--mute);font-size:17px;line-height:1;cursor:pointer;padding:4px 6px;border-radius:6px}
+.act button:hover{background:var(--inp);color:var(--ink)}
+.act button.sure{color:var(--no);font-size:13px;font-weight:600}
+tr.editing td{background:color-mix(in srgb,var(--acc) 22%,var(--card))}
+.empty{color:var(--mute);text-align:center;padding:22px 10px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.note{color:var(--mute);font-size:13px;margin-top:12px}
+.hide{display:none!important}
+/* charging tab */
+.frm.ch{grid-template-columns:1fr 1fr}
+.price{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 18px}
+.price label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mute)}
+.price label span{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:15px}
+.price input{width:110px;font-size:17px;font-weight:600}
+.price p{grid-column:1/-1;margin:0;color:var(--mute);font-size:13px}
+#uLive{grid-column:1/-1;font-size:13px;color:var(--mute);min-height:1em}
+#uLive b{color:var(--ink)}
+.sum.four{display:grid;grid-template-columns:repeat(4,1fr)}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px}
+.info div{display:flex;flex-direction:column}
+.info small{color:var(--mute);font-size:12px}
+.info b{font-variant-numeric:tabular-nums}
+td.part{color:var(--mute);font-size:12.5px}
+/* vehicle tab */
+.vin{font:600 19px/1.3 ui-monospace,Consolas,monospace;letter-spacing:.05em;overflow-wrap:anywhere;margin:2px 0 10px}
+.vin span{border-bottom:3px solid var(--acc)}
+.vin span+span{margin-left:6px}
+dl.sp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:7px 14px;margin:0}
+dl.sp dt{color:var(--mute);font-size:13px}
+dl.sp dd{margin:0;font-weight:600;min-width:0;font-variant-numeric:tabular-nums}
+dl.sp dd small{display:block;font-weight:400;color:var(--mute);font-size:12px}
+/* intro: charging ring and bolt, in this app's colours (lime, ink) on grey */
+#intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;cursor:pointer;
+  background:radial-gradient(120% 90% at 50% 30%,#626973 0%,#4b515a 45%,#353a42 100%);color:#fff;
+  animation:inOut .55s ease-in 2.75s forwards}
+#intro .lg{height:150px;width:auto;overflow:visible;filter:drop-shadow(0 0 12px rgba(196,236,27,.3));animation:glow 1.2s ease-in-out 1.3s both}
+#intro .ring{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s cubic-bezier(.6,.1,.3,1) .15s forwards}
+#intro .bolt{opacity:0;transform:translateY(-30px);animation:blitz .55s cubic-bezier(.2,.8,.2,1) .7s forwards}
+#intro .lvl rect{opacity:0;animation:rise .25s ease-out forwards}
+#intro .lvl rect:nth-child(1){animation-delay:.95s}#intro .lvl rect:nth-child(2){animation-delay:1.05s}
+#intro .lvl rect:nth-child(3){animation-delay:1.15s}#intro .lvl rect:nth-child(4){animation-delay:1.25s}
+#intro h2{font:700 clamp(22px,7vw,32px)/1.1 "Archivo Narrow",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;margin:26px 0 6px;opacity:0;animation:rise .6s ease-out 1.55s forwards}
+#intro p{font:600 13px "Archivo Narrow",Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#c4ec1b;margin:0;opacity:0;animation:rise .6s ease-out 1.75s forwards}
+#intro .sweep{height:2px;width:220px;margin:16px auto 0;background:linear-gradient(90deg,transparent,#e4ff6b,#c4ec1b,transparent);transform:scaleX(0);animation:sweep .7s ease-out 1.85s forwards}
+#intro small{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:0;right:0;font-size:12px;color:#d5dae1;opacity:0;animation:rise .4s 1.2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes blitz{to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes sweep{to{transform:scaleX(1)}}
+@keyframes glow{50%{filter:drop-shadow(0 0 26px rgba(196,236,27,.7))}100%{filter:drop-shadow(0 0 12px rgba(196,236,27,.3))}}
+@keyframes inOut{to{opacity:0;transform:scale(1.06);visibility:hidden}}
+@media (prefers-reduced-motion:reduce){#intro *{animation-duration:.01s!important;animation-delay:0s!important}#intro{animation:inOut .4s ease-in 1.2s forwards}}
+.inst{position:relative;border-color:var(--acc);border-width:2px}
+.inst p{margin:6px 0 0}
+.inst .x{position:absolute;top:6px;right:4px}
+.inst .sec{margin-top:10px}
+/* budget tab */
+.km{display:flex;align-items:center;gap:10px}
+.km input{width:110px}
+h3{font:700 20px/1 "Archivo Narrow",Archivo,sans-serif;display:flex;justify-content:space-between;align-items:baseline;margin:22px 2px 8px;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-size:15px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px}
+.top{display:flex;gap:6px}
+.nm{flex:1;font-weight:600}
+.x{border:0;background:none;color:var(--mute);font-size:22px;line-height:1;cursor:pointer;padding:0 8px}
+.f{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.f label{font-size:12px;color:var(--mute);display:flex;flex-direction:column;gap:2px}
+.res{display:flex;justify-content:space-between;margin-top:8px;color:var(--mute);font-size:13px}
+.res b{color:var(--ink);font-size:15px}
+.add{font:inherit;border:1px dashed var(--mute);background:none;color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer}
+@media (max-width:600px){
+  .frm{grid-template-columns:1fr 1fr}
+  .frm .op,.frm .nt{grid-column:1/-1}
+  .frm .dt{grid-column:1/-1}
+  .sum.four{grid-template-columns:1fr 1fr}
+  .hk{display:none}
+  th,td{padding:8px 6px}
+  .sum{gap:12px}.sum b{font-size:22px}
+  nav button{font-size:14px}
+  dl.sp{grid-template-columns:1fr;gap:0}dl.sp dd{margin-bottom:8px}
+}
+</style>
+</head>
+<body>
+<div id="intro" class="hide" aria-hidden="true">
+<div>
+<svg class="lg" viewBox="0 0 200 200"><defs><linearGradient id="iA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4ff6b"/><stop offset=".45" stop-color="#c4ec1b"/><stop offset=".55" stop-color="#afd40f"/><stop offset="1" stop-color="#7f9c00"/></linearGradient></defs>
+<circle class="ring" pathLength="1" cx="100" cy="100" r="80" fill="none" stroke="url(#iA)" stroke-width="12" transform="rotate(-90 100 100)"/>
+<path class="bolt" d="M112 28 L58 112 L94 112 L84 172 L142 84 L106 84 Z" fill="url(#iA)" stroke="#1b2230" stroke-width="3" stroke-linejoin="round"/>
+<g class="lvl" fill="url(#iA)"><rect x="60" y="188" width="16" height="8" rx="2"/><rect x="82" y="188" width="16" height="8" rx="2"/><rect x="104" y="188" width="16" height="8" rx="2"/><rect x="126" y="188" width="16" height="8" rx="2"/></g></svg>
+<h2>Carnet d'entretien</h2>
+<p>Peugeot E-2008 · 156 ch électrique</p>
+<div class="sweep"></div>
+</div>
+<small>Touchez pour passer</small>
+</div>
+<div class="w">
+<h1>Carnet d'entretien – Peugeot E-2008</h1>
+<p class="sub">Phase 2, 2026 · électrique 156 ch (115 kW) · batterie 54 kWh</p>
+<div class="card inst hide" id="inst" role="note">
+<button class="x" id="instX" aria-label="Fermer">×</button>
+<b>Installer sur l'iPhone</b>
+<p id="instT"></p>
+<button class="sec hide" id="instC">Copier l'adresse</button>
+</div>
+<nav role="tablist">
+<button role="tab" id="tabLog" aria-selected="true" aria-controls="pLog">Entretiens</button>
+<button role="tab" id="tabChg" aria-selected="false" aria-controls="pChg">Recharges</button>
+<button role="tab" id="tabBud" aria-selected="false" aria-controls="pBud">Budget</button>
+<button role="tab" id="tabVeh" aria-selected="false" aria-controls="pVeh">Véhicule</button>
+</nav>
+
+<section id="pLog" role="tabpanel" aria-labelledby="tabLog">
+<div class="sum">
+<div><small id="lTotL">Total dépensé</small><b id="lTot">–</b></div>
+<div><small id="lYrL">Cette année</small><b id="lYr">–</b></div>
+<div><small>Opérations</small><b id="lCnt">–</b></div>
+</div>
+
+<form class="card frm" id="frm" autocomplete="off">
+<label class="dt">Date<input id="fD" type="date" required></label>
+<label class="op">Type d'opération<input id="fT" list="types" placeholder="Ex. Filtre d'habitacle" required><datalist id="types"></datalist></label>
+<label>Prix €<input id="fP" type="text" inputmode="decimal" placeholder="0,00" required></label>
+<label>Kilométrage<input id="fK" type="text" inputmode="numeric" placeholder="Facultatif"></label>
+<label class="nt">Note<input id="fN" placeholder="Garage, pièces, référence… (facultatif)"></label>
+<div class="btns"><button class="pri" id="fB" type="submit">Ajouter l'entretien</button><button class="sec hide" id="fC" type="button">Annuler</button></div>
+<div id="fMsg" role="status"></div>
+</form>
+
+<div class="bar"><h2>Historique</h2>
+<select id="yrSel" aria-label="Filtrer par année"></select></div>
+<table>
+<thead><tr><th>Date</th><th>Opération</th><th class="n hk">Km</th><th class="n">Prix</th><th class="act"><span class="hide">Actions</span></th></tr></thead>
+<tbody id="tb"></tbody>
+<tfoot><tr><td colspan="2" id="ftL">Total</td><td class="hk"></td><td class="n" id="ftT">–</td><td></td></tr></tfoot>
+</table>
+
+<div class="tools"><button class="sec" id="xCsv">Exporter pour Excel (.csv)</button></div>
+</section>
+
+<section id="pChg" role="tabpanel" aria-labelledby="tabChg" class="hide">
+<div class="sum four">
+<div><small>kWh/100 km</small><b id="uK100">–</b></div>
+<div><small>≈ L/100 km</small><b id="uL100">–</b></div>
+<div><small>Coût aux 100 km</small><b id="uC100">–</b></div>
+<div><small>Budget par mois</small><b id="uMo">–</b></div>
+</div>
+
+<form class="card frm ch" id="ufrm" autocomplete="off">
+<label class="dt hide" id="uDL">Date<input id="uD" type="date"></label>
+<label>Prix payé €<input id="uP" type="text" inputmode="decimal" placeholder="Ex. 12,40" required></label>
+<label>Kilométrage actuel<input id="uK" type="text" inputmode="numeric" placeholder="Ex. 8 450" required></label>
+<div id="uLive"></div>
+<div class="btns"><button class="pri" id="uB" type="submit">Ajouter la recharge</button><button class="sec hide" id="uC" type="button">Annuler</button></div>
+<div id="uMsg" class="fmsg" role="status"></div>
+</form>
+
+<div class="card info">
+<div><small>Total recharges</small><b id="uTot">–</b></div>
+<div><small>Km suivis</small><b id="uKm">–</b></div>
+<div><small>kWh estimés</small><b id="uKwh">–</b></div>
+<div><small>Coût en litres de SP95</small><b id="uLe">–</b></div>
+<div><small>Rythme retenu</small><b id="uRy">–</b></div>
+<div><small>Budget par an</small><b id="uAn">–</b></div>
+</div>
+
+<div class="bar"><h2>Recharges</h2></div>
+<table>
+<thead><tr><th>Date</th><th class="n hk">Compteur</th><th class="n">Distance</th><th class="n">Prix</th><th class="n hk">kWh/100</th><th class="n">≈ L/100</th><th class="act"><span class="hide">Actions</span></th></tr></thead>
+<tbody id="utb"></tbody>
+<tfoot><tr><td id="uftL">Total</td><td class="hk"></td><td class="n" id="uftD">–</td><td class="n" id="uftP">–</td><td class="n hk" id="uftK">–</td><td class="n" id="uftA">–</td><td></td></tr></tfoot>
+</table>
+<div class="tools"><button class="sec" id="uCsv">Exporter pour Excel (.csv)</button></div>
+
+<div class="card price" style="margin-top:18px">
+<label for="uRef">Prix moyen du kWh<span><input id="uRef" type="text" inputmode="decimal" placeholder="0,25">€/kWh</span></label>
+<label for="uEss">Prix de l'essence SP95 (comparaison)<span><input id="uEss" type="text" inputmode="decimal" placeholder="1,85">€/L</span></label>
+<p>Tu n'entres que le prix payé : l'énergie est estimée avec ce prix moyen (kWh = prix payé ÷ prix du kWh). Mets ton tarif habituel : maison environ 0,20 €, borne publique 0,30 à 0,45 €, borne rapide 0,45 à 0,65 €.</p>
+</div>
+<p class="note">Une recharge remplace l'énergie roulée depuis la précédente : sa distance est son kilométrage moins celui de la recharge d'avant, et son prix est rapporté à cette distance. La toute première recharge sert de point de départ. Recharge à peu près au même pourcentage à chaque fois pour des chiffres justes. Équivalence en L/100 km : un litre d'essence contient environ 8,9 kWh, donc L/100 = kWh/100 ÷ 8,9. « Coût en litres de SP95 » dit combien de litres d'essence ton coût aux 100 km aurait payé. Le budget par mois = coût aux 100 km × ton rythme de km par mois, calculé à partir de tes recharges (ou du kilométrage annuel de l'onglet Budget tant qu'il y a moins d'un mois de recharges).</p>
+</section>
+
+<section id="pBud" role="tabpanel" aria-labelledby="tabBud" class="hide">
+<div class="sum">
+<div><small>Par an</small><b id="tY">–</b></div>
+<div><small>Par mois</small><b id="tM">–</b></div>
+<div><small>Pour 100 km</small><b id="tK">–</b></div>
+</div>
+<div class="card km"><label for="kmAn">Kilométrage annuel</label><input id="kmAn" type="number" inputmode="numeric"><span>km</span></div>
+<div id="list"></div>
+<p class="note">Une ligne revient quand l'intervalle en km ou en mois est atteint, le plus court des deux. Laisse 0 pour ignorer un critère. Pas de vidange, de bougies ni de courroie sur l'E-2008. Le freinage régénératif use peu les plaquettes, mais les étriers peu sollicités grippent : un nettoyage tous les deux ans évite des disques rouillés. Les pneus s'usent plus vite qu'en thermique à cause du poids et du couple. Les montants sont des pièces commandées en ligne, sans main-d'œuvre, sauf les lignes marquées « atelier ».</p>
+<button class="sec" id="rst">Réinitialiser le budget</button>
+</section>
+
+<section id="pVeh" role="tabpanel" aria-labelledby="tabVeh" class="hide">
+<div class="sum">
+<div><small>Autonomie WLTP</small><b>406 km</b></div>
+<div><small>Batterie utile</small><b>50,8 kWh</b></div>
+<div><small>Conso WLTP</small><b>15,2–15,7</b></div>
+<div><small>≈ en essence</small><b>1,7 L</b></div>
+</div>
+<div class="card">
+<div class="vin" aria-label="VIN VR3UKZKW1TJ774904"><span>VR3</span><span>UKZKW</span><span>1</span><span>TJ</span><span>774904</span></div>
+<dl class="sp">
+<dt>VR3</dt><dd>Automobiles Peugeot, France</dd>
+<dt>U · KZKW</dt><dd>2008 de 2e génération (P24), motorisation électrique 115 kW<small>Même code que les E-2008 156 ch identifiés par leur VIN</small></dd>
+<dt>1</dt><dd>Caractère de contrôle</dd>
+<dt>T</dt><dd>Millésime 2026</dd>
+<dt>J</dt><dd>Code usine<small>Le 2008 électrique européen est produit à Vigo, en Espagne</small></dd>
+<dt>774904</dt><dd>Numéro de série</dd>
+</dl>
+<p class="note">La finition, la teinte, les jantes et les options ne sont pas codées dans le VIN : le certificat d'immatriculation ou le Service Box Peugeot les donnent.</p>
+</div>
+<div class="bar"><h2>Moteur et batterie</h2></div>
+<div class="card"><dl class="sp">
+<dt>Moteur</dt><dd>Synchrone à aimants permanents, à l'avant<small>Génération M3, celle de la phase 2</small></dd>
+<dt>Puissance / couple</dt><dd>115 kW (156 ch) · 260 Nm</dd>
+<dt>Transmission</dt><dd>Traction, réducteur à rapport unique<small>Lubrifié à vie selon Peugeot</small></dd>
+<dt>Batterie</dt><dd>54 kWh bruts, 50,8 kWh utiles<small>Lithium-ion NMC 811, 102 cellules, refroidissement liquide</small></dd>
+<dt>Garantie batterie</dt><dd>8 ans ou 160 000 km<small>Pour au moins 70 % de capacité</small></dd>
+<dt>Consommation WLTP</dt><dd>15,2 à 15,7 kWh/100 km<small>Estimation réelle : 14,7 (doux) à 19,9 (hiver)</small></dd>
+</dl></div>
+<div class="bar"><h2>Recharge</h2></div>
+<div class="card"><dl class="sp">
+<dt>Courant alternatif</dt><dd>7,4 kW de série, 11 kW en option<small>Prise Type 2, trappe arrière gauche</small></dd>
+<dt>Courant continu</dt><dd>100 kW, Combo CCS<small>20 à 80 % en 26 à 30 minutes environ</small></dd>
+<dt>Pompe à chaleur</dt><dd>Selon pays et finition</dd>
+</dl></div>
+<div class="bar"><h2>Châssis et dimensions</h2></div>
+<div class="card"><dl class="sp">
+<dt>Plateforme</dt><dd>e-CMP</dd>
+<dt>Suspensions</dt><dd>Pseudo-McPherson à l'avant, essieu semi-rigide à l'arrière</dd>
+<dt>Performances</dt><dd>0 à 100 km/h en 9,1 s · 150 km/h maxi</dd>
+<dt>Poids</dt><dd>Environ 1 550 à 1 620 kg selon la méthode de mesure</dd>
+<dt>L × l × h</dt><dd>4,30 × 1,77 × 1,55 m · empattement 2,605 m</dd>
+<dt>Coffre</dt><dd>434 L</dd>
+<dt>Pneus</dt><dd>Selon jantes : 215/65 R16, 215/60 R17 ou 215/55 R18</dd>
+</dl></div>
+<p class="note">Sources : EV Database, Fiches-auto, Automobile Propre. Les bases VIN publiques ne décodent pas les codes Peugeot en détail : ce décodage suit la norme ISO 3779 et des VIN d'E-2008 comparables.</p>
+</section>
+
+<div class="tools">
+<button class="sec" id="xJson">Sauvegarder (.json)</button>
+<button class="sec" id="iJson">Restaurer une sauvegarde</button>
+<input type="file" id="iFile" accept=".json,application/json" class="hide">
+</div>
+<p class="note" id="ioMsg" role="status"></p>
+<p class="note">Tes entretiens et tes recharges restent sur cet appareil. Fais une sauvegarde de temps en temps : elle se restaure aussi bien sur le téléphone que sur l'ordinateur.</p>
+</div>
+
+<script>
+(function(){
+'use strict';
+var K='e2008-entretien-v1';
+var KWH_PER_L=8.9,DEF_KWH=0.25,DEF_ESS=1.85;
+var D=[
+["Entretien courant","Révision Peugeot (atelier, contrôles + mises à jour)",25000,24,150],
+["Entretien courant","Filtre d'habitacle charbon actif",20000,12,25],
+["Entretien courant","Liquide de frein",0,24,15],
+["Entretien courant","Balais d'essuie-glace",0,12,35],
+["Entretien courant","Climatisation / pompe à chaleur (atelier)",0,48,90],
+["Entretien courant","Liquide de refroidissement moteur + batterie",160000,120,60],
+["Freins","Plaquettes avant",70000,0,45],
+["Freins","Disques + plaquettes avant",120000,0,150],
+["Freins","Disques + plaquettes arrière",120000,0,120],
+["Freins","Nettoyage et graissage des étriers",0,24,10],
+["Liaison au sol","Biellettes de barre stabilisatrice",80000,0,40],
+["Liaison au sol","Rotules + silentblocs de triangles",100000,0,120],
+["Liaison au sol","Amortisseurs (4)",150000,0,320],
+["Liaison au sol","Roulements de roue",150000,0,140],
+["Liaison au sol","Géométrie (atelier)",30000,24,70],
+["Pneus","4 pneus posés (taille selon jantes)",30000,0,560],
+["Provisions","Batterie 12 V",0,72,130],
+["Provisions","Câble de recharge Type 2",0,96,200],
+["Provisions","Contrôle technique (atelier)",0,24,75]
+];
+function defBudget(){return{kmAn:15000,rows:D.map(function(r){return{c:r[0],n:r[1],km:r[2],mo:r[3],p:r[4]}})}}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function eur(n,dec){return n.toLocaleString('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:dec?2:0,maximumFractionDigits:dec?2:0})}
+function eur2(n){return eur(n,Math.round(n*100)%100!==0)}
+function today(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+function frDate(s){var p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0]}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+var S=null;
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(!S||typeof S!=='object')S={};
+if(!Array.isArray(S.log))S.log=[];
+if(!Array.isArray(S.charge))S.charge=[];
+if(!(S.kwhPrice>0))S.kwhPrice=null;
+if(!(S.essPrice>0))S.essPrice=null;
+if(!S.budget||!Array.isArray(S.budget.rows))S.budget=defBudget();
+var storeOk=true;
+function save(){try{localStorage.setItem(K,JSON.stringify(S));storeOk=true}catch(e){storeOk=false;say($('fMsg'),"Enregistrement impossible sur cet appareil (stockage plein ou bloqué).",true)}}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+function say(el,t,err){el.textContent=t;el.className=el.getAttribute('role')==='status'&&el.id!=='ioMsg'?(err?'err':''):'note'}
+
+/* ---------- tabs ---------- */
+var TABS={log:['tabLog','pLog'],chg:['tabChg','pChg'],bud:['tabBud','pBud'],veh:['tabVeh','pVeh']};
+function tab(which){
+  if(!TABS[which])which='log';
+  Object.keys(TABS).forEach(function(k){$(TABS[k][0]).setAttribute('aria-selected',k===which);$(TABS[k][1]).classList.toggle('hide',k!==which)});
+  try{localStorage.setItem(K+'.tab',which)}catch(e){}
+  if(which==='bud')renderBudget();
+  if(which==='chg')renderChg();
+}
+$('tabLog').onclick=function(){tab('log')};
+$('tabChg').onclick=function(){tab('chg')};
+$('tabBud').onclick=function(){tab('bud')};
+$('tabVeh').onclick=function(){tab('veh')};
+
+/* ---------- maintenance log ---------- */
+var editId=null,yrFilter='all',delArm=null;
+function sorted(){return S.log.slice().sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:(b.km||0)-(a.km||0)})}
+function years(){var o={};S.log.forEach(function(e){o[e.d.slice(0,4)]=1});return Object.keys(o).sort().reverse()}
+function renderLog(){
+  var ys=years(),thisY=today().slice(0,4);
+  if(yrFilter!=='all'&&ys.indexOf(yrFilter)<0)yrFilter='all';
+  $('yrSel').innerHTML='<option value="all">Toutes les années</option>'+ys.map(function(y){return '<option value="'+y+'"'+(y===yrFilter?' selected':'')+'>'+y+'</option>'}).join('');
+  var rows=sorted().filter(function(e){return yrFilter==='all'||e.d.slice(0,4)===yrFilter});
+  var h='',cur=null,ySum={};
+  rows.forEach(function(e){var y=e.d.slice(0,4);ySum[y]=(ySum[y]||0)+e.p});
+  rows.forEach(function(e){
+    var y=e.d.slice(0,4);
+    if(yrFilter==='all'&&y!==cur&&ys.length>1){cur=y;h+='<tr class="yr"><td colspan="3" class="yh">'+y+'</td><td class="n">'+eur2(ySum[y])+'</td><td></td></tr>'}
+    h+='<tr data-id="'+e.id+'"'+(e.id===editId?' class="editing"':'')+'><td class="d">'+frDate(e.d)+'</td><td>'+esc(e.t)+
+      (e.km?'<small class="km-m">'+e.km.toLocaleString('fr-FR')+' km</small>':'')+
+      (e.n?'<small>'+esc(e.n)+'</small>':'')+'</td><td class="n hk">'+(e.km?e.km.toLocaleString('fr-FR'):'')+'</td><td class="n">'+eur2(e.p)+
+      '</td><td class="act"><button data-ed="'+e.id+'" aria-label="Modifier" title="Modifier">✎</button><button data-del="'+e.id+'" aria-label="Supprimer" title="Supprimer">×</button></td></tr>';
+  });
+  if(!rows.length)h='<tr><td colspan="5" class="empty">Aucun entretien pour l\'instant. Ajoute le premier avec le formulaire ci-dessus.</td></tr>';
+  $('tb').innerHTML=h;
+  var narrow=window.matchMedia('(max-width:600px)').matches;
+  Array.prototype.forEach.call(document.querySelectorAll('.km-m'),function(x){x.classList.toggle('hide',!narrow)});
+  if(narrow)Array.prototype.forEach.call(document.querySelectorAll('tr.yr td.yh'),function(td){td.colSpan=2});
+  var fTot=rows.reduce(function(s,e){return s+e.p},0);
+  $('ftL').textContent=yrFilter==='all'?'Total ('+rows.length+' opération'+(rows.length>1?'s':'')+')':'Total '+yrFilter+' ('+rows.length+')';
+  $('ftT').textContent=eur2(fTot);
+  var all=S.log.reduce(function(s,e){return s+e.p},0);
+  var yr=S.log.filter(function(e){return e.d.slice(0,4)===thisY}).reduce(function(s,e){return s+e.p},0);
+  $('lTot').textContent=eur2(all);
+  $('lYrL').textContent='En '+thisY;
+  $('lYr').textContent=eur2(yr);
+  $('lCnt').textContent=S.log.length;
+  var t={};S.budget.rows.forEach(function(r){t[r.n]=1});S.log.forEach(function(e){t[e.t]=1});
+  $('types').innerHTML=Object.keys(t).sort(function(a,b){return a.localeCompare(b,'fr')}).map(function(n){return '<option value="'+esc(n)+'">'}).join('');
+}
+window.matchMedia('(max-width:600px)').addEventListener('change',renderLog);
+function resetForm(){
+  editId=null;$('frm').reset();$('fD').value=today();
+  $('fB').textContent="Ajouter l'entretien";$('fC').classList.add('hide');
+}
+$('fD').value=today();
+$('frm').addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var d=$('fD').value,t=$('fT').value.trim(),p=parseFloat(String($('fP').value).replace(/[\s  €]/g,'').replace(',','.')),km=parseInt(String($('fK').value).replace(/\D/g,''),10),n=$('fN').value.trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){say($('fMsg'),'Indique une date.',true);return}
+  if(!t){say($('fMsg'),"Indique le type d'opération.",true);return}
+  if(!(p>=0)){say($('fMsg'),'Indique un prix (0 si gratuit).',true);return}
+  var e={id:editId||uid(),d:d,t:t,p:Math.round(p*100)/100,km:km>0?km:0,n:n};
+  var msg;
+  if(editId){S.log=S.log.map(function(x){return x.id===editId?e:x});msg='Modifié : '+t+'.'}
+  else{S.log.push(e);msg='Ajouté : '+t+' le '+frDate(d)+' pour '+eur2(e.p)+'.'}
+  save();resetForm();renderLog();if(storeOk)say($('fMsg'),msg);
+});
+$('fC').onclick=function(){resetForm();renderLog();say($('fMsg'),'')};
+$('yrSel').onchange=function(){yrFilter=this.value;renderLog()};
+$('tb').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  var id=b.getAttribute('data-ed');
+  if(id){
+    var e=S.log.filter(function(x){return x.id===id})[0];if(!e)return;
+    editId=id;$('fD').value=e.d;$('fT').value=e.t;$('fP').value=String(e.p).replace('.',',');$('fK').value=e.km||'';$('fN').value=e.n||'';
+    $('fB').textContent='Enregistrer la modification';$('fC').classList.remove('hide');
+    say($('fMsg'),'Modification de « '+e.t+' » du '+frDate(e.d)+'.');renderLog();
+    $('frm').scrollIntoView({behavior:'smooth',block:'start'});$('fT').focus({preventScroll:true});
+    return;
+  }
+  id=b.getAttribute('data-del');if(!id)return;
+  if(delArm&&delArm.id===id){
+    clearTimeout(delArm.t);delArm=null;
+    var gone=S.log.filter(function(x){return x.id===id})[0];
+    S.log=S.log.filter(function(x){return x.id!==id});if(editId===id)resetForm();
+    save();renderLog();if(gone)say($('fMsg'),'Supprimé : '+gone.t+' du '+frDate(gone.d)+'.');
+    return;
+  }
+  if(delArm){clearTimeout(delArm.t);renderLog()}
+  b=document.querySelector('button[data-del="'+id+'"]');
+  b.textContent='Supprimer ?';b.classList.add('sure');
+  delArm={id:id,t:setTimeout(function(){delArm=null;renderLog()},3000)};
+});
+
+/* ---------- export / import ---------- */
+function download(name,type,text){
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:type}));a.download=name;
+  document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
+}
+$('xCsv').onclick=function(){
+  if(!S.log.length){say($('fMsg'),'Rien à exporter pour l\'instant.');return}
+  function c(v){v=String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+  var rows=sorted().reverse(),tot=0;
+  var out=['Date;Opération;Kilométrage;Prix (€);Note'];
+  rows.forEach(function(e){tot+=e.p;out.push([frDate(e.d),c(e.t),e.km||'',e.p.toFixed(2).replace('.',','),c(e.n||'')].join(';'))});
+  out.push(';Total;;'+tot.toFixed(2).replace('.',',')+';');
+  download('entretien-e2008-'+today()+'.csv','text/csv;charset=utf-8','﻿'+out.join('\r\n'));
+  say($('fMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
+};
+$('xJson').onclick=function(){
+  download('sauvegarde-entretien-e2008-'+today()+'.json','application/json',JSON.stringify({app:'e2008-entretien',v:1,saved:new Date().toISOString(),log:S.log,charge:S.charge,kwhPrice:S.kwhPrice,essPrice:S.essPrice,budget:S.budget},null,1));
+  say($('ioMsg'),'Sauvegarde créée : '+S.log.length+' entretien'+(S.log.length>1?'s':'')+', '+S.charge.length+' recharge'+(S.charge.length>1?'s':'')+' et le budget.');
+};
+$('iJson').onclick=function(){$('iFile').click()};
+$('iFile').onchange=function(){
+  var f=this.files&&this.files[0];this.value='';if(!f)return;
+  f.text().then(function(txt){
+    var o=JSON.parse(txt);
+    if(!o||o.app!=='e2008-entretien'||!Array.isArray(o.log))throw new Error('format');
+    var have={};S.log.forEach(function(e){have[e.id]=1});
+    var add=o.log.filter(function(e){return e&&e.id&&!have[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&typeof e.t==='string'&&typeof e.p==='number'})
+      .map(function(e){return{id:String(e.id),d:e.d,t:e.t,p:e.p,km:+e.km||0,n:typeof e.n==='string'?e.n:''}});
+    S.log=S.log.concat(add);
+    var hc={};S.charge.forEach(function(e){hc[e.id]=1});
+    var addC=(Array.isArray(o.charge)?o.charge:[]).filter(function(e){return e&&e.id&&!hc[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&e.km>0&&e.p>=0})
+      .map(function(e){return{id:String(e.id),d:e.d,km:+e.km,p:+e.p}});
+    S.charge=S.charge.concat(addC);
+    if(o.kwhPrice>0)S.kwhPrice=o.kwhPrice;
+    if(o.essPrice>0)S.essPrice=o.essPrice;
+    if(o.budget&&Array.isArray(o.budget.rows))S.budget=o.budget;
+    save();renderLog();renderChg();say($('ioMsg'),'Sauvegarde restaurée : '+add.length+' entretien'+(add.length>1?'s':'')+' et '+addC.length+' recharge'+(addC.length>1?'s':'')+' ajoutés (les doublons sont ignorés).');
+  }).catch(function(){say($('ioMsg'),'Ce fichier n\'est pas une sauvegarde du carnet d\'entretien de l\'E-2008.')});
+};
+
+/* ---------- charging ---------- */
+function num(v){return parseFloat(String(v).replace(/[\s  €L]/gi,'').replace(',','.'))}
+function n1(x,d){return x.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function kwhP(){return S.kwhPrice||DEF_KWH}
+function essP(){return S.essPrice||DEF_ESS}
+function chgAsc(){return S.charge.slice().sort(function(a,b){return a.km-b.km||(a.d<b.d?-1:a.d>b.d?1:0)})}
+/* each charge refills the energy used since the previous one: its price over the distance
+   driven from the previous charge's odometer reading */
+function chgStats(){
+  var A=chgAsc(),per={},kp=kwhP();
+  A.forEach(function(e,i){
+    if(i===0)return;
+    var dist=e.km-A[i-1].km;
+    if(dist>0){var kwh=e.p/kp;per[e.id]={dist:dist,c:e.p/dist*100,kwh:kwh,k:kwh/dist*100,l:kwh/dist*100/KWH_PER_L}}
+  });
+  var st={A:A,per:per,P:0};
+  A.forEach(function(e){st.P+=e.p});
+  if(A.length>1&&A[A.length-1].km>A[0].km){
+    var P=0;for(var j=1;j<A.length;j++)P+=A[j].p;
+    st.dist=A[A.length-1].km-A[0].km;st.Pused=P;st.kwh=P/kp;
+    st.k100=st.kwh/st.dist*100;st.l100=st.k100/KWH_PER_L;st.c100=P/st.dist*100;st.le=st.c100/essP();
+  }
+  if(A.length>1){
+    var byD=A.slice().sort(function(x,y){return x.d<y.d?-1:x.d>y.d?1:x.km-y.km}),f=byD[0],l=byD[byD.length-1];
+    var days=(Date.parse(l.d)-Date.parse(f.d))/864e5;
+    if(days>=30&&l.km>f.km){st.pace=(l.km-f.km)/days*30.44;st.paceSrc='tes recharges'}
+  }
+  if(!st.pace&&S.budget.kmAn>0){st.pace=S.budget.kmAn/12;st.paceSrc='onglet Budget'}
+  if(st.c100!=null&&st.pace){st.mo=st.c100/100*st.pace;st.yr=st.mo*12}
+  return st;
+}
+var uEdit=null,uDel=null;
+function renderChg(){
+  var st=chgStats(),narrow=window.matchMedia('(max-width:600px)').matches;
+  $('uK100').textContent=st.k100!=null?n1(st.k100,1):'–';
+  $('uL100').textContent=st.l100!=null?n1(st.l100,2)+' L':'–';
+  $('uC100').textContent=st.c100!=null?eur(st.c100,true):'–';
+  $('uMo').textContent=st.mo!=null?eur(st.mo):'–';
+  $('uTot').textContent=eur2(st.P);
+  $('uKm').textContent=st.dist?st.dist.toLocaleString('fr-FR')+' km':'–';
+  $('uKwh').textContent=st.kwh!=null?n1(st.kwh,0)+' kWh':'–';
+  $('uLe').textContent=st.le!=null?n1(st.le,1)+' L/100 km':'–';
+  $('uRy').textContent=st.pace?Math.round(st.pace).toLocaleString('fr-FR')+' km/mois ('+st.paceSrc+')':'–';
+  $('uAn').textContent=st.yr!=null?eur(st.yr):'–';
+  if(document.activeElement!==$('uRef'))$('uRef').value=S.kwhPrice?n1(S.kwhPrice,3).replace(/0$/,''):'';
+  if(document.activeElement!==$('uEss'))$('uEss').value=S.essPrice?n1(S.essPrice,3).replace(/0$/,''):'';
+  var rows=st.A.slice().reverse(),h='';
+  rows.forEach(function(e){
+    var c=st.per[e.id];
+    h+='<tr'+(e.id===uEdit?' class="editing"':'')+'><td class="d">'+frDate(e.d)+(narrow?'<small>'+e.km.toLocaleString('fr-FR')+' km</small>':'')+
+      '</td><td class="n hk">'+e.km.toLocaleString('fr-FR')+'</td>'+
+      (c?'<td class="n">'+c.dist.toLocaleString('fr-FR')+' km</td>':'<td class="n part">'+(e===st.A[0]?'départ':'–')+'</td>')+
+      '<td class="n">'+eur2(e.p)+(c&&narrow?'<small>'+n1(c.k,1)+' kWh/100</small>':'')+'</td>'+
+      (c?'<td class="n hk">'+n1(c.k,1)+'</td><td class="n"><b>'+n1(c.l,2)+'</b></td>':'<td class="n hk part">–</td><td class="n part">–</td>')+
+      '<td class="act"><button data-ued="'+e.id+'" aria-label="Modifier" title="Modifier">✎</button><button data-udel="'+e.id+'" aria-label="Supprimer" title="Supprimer">×</button></td></tr>';
+  });
+  if(!rows.length)h='<tr><td colspan="7" class="empty">Aucune recharge pour l\'instant. Entre le prix payé et le kilométrage du compteur : la première recharge sert de point de départ, les calculs commencent à la deuxième.</td></tr>';
+  $('utb').innerHTML=h;
+  $('uftL').textContent='Total ('+rows.length+' recharge'+(rows.length>1?'s':'')+')';
+  $('uftD').textContent=st.dist?st.dist.toLocaleString('fr-FR')+' km':'–';
+  $('uftP').textContent=eur2(st.P);
+  $('uftK').textContent=st.k100!=null?n1(st.k100,1):'–';
+  $('uftA').textContent=st.l100!=null?n1(st.l100,2):'–';
+  live();
+}
+window.matchMedia('(max-width:600px)').addEventListener('change',renderChg);
+function uReset(){uEdit=null;$('ufrm').reset();$('uD').value=today();$('uDL').classList.add('hide');$('uB').textContent='Ajouter la recharge';$('uC').classList.add('hide');live()}
+$('uD').value=today();
+$('uRef').addEventListener('input',function(){var v=num(this.value);S.kwhPrice=v>0?Math.round(v*1000)/1000:null;save();renderChg()});
+$('uEss').addEventListener('input',function(){var v=num(this.value);S.essPrice=v>0?Math.round(v*1000)/1000:null;save();renderChg()});
+$('uRef').addEventListener('blur',renderChg);$('uEss').addEventListener('blur',renderChg);
+/* live: distance since the previous charge, and what this charge gives per 100 km */
+function live(){
+  var km=parseInt(String($('uK').value).replace(/\D/g,''),10),p=num($('uP').value),el=$('uLive');
+  var all=chgAsc().filter(function(e){return e.id!==uEdit});
+  if(!all.length){el.textContent='Première recharge : elle sert de point de départ pour les suivantes.';return}
+  if(!(km>0)){var l=all[all.length-1];el.innerHTML='Dernière recharge à <b>'+l.km.toLocaleString('fr-FR')+' km</b> le '+frDate(l.d)+'.';return}
+  var prev=all.filter(function(e){return e.km<km}).pop();
+  if(!prev){el.textContent='Ce kilométrage est plus bas que toutes les recharges enregistrées.';return}
+  var d=km-prev.km,t='<b>'+d.toLocaleString('fr-FR')+' km</b> depuis la recharge du '+frDate(prev.d);
+  if(d>0&&p>0){var k=p/kwhP()/d*100;t+=' · '+eur(p/d*100,true)+' aux 100 km · '+n1(k,1)+' kWh/100 · ≈ '+n1(k/KWH_PER_L,2)+' L/100'}
+  el.innerHTML=t;
+}
+$('ufrm').addEventListener('input',live);
+$('ufrm').addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var d=uEdit?$('uD').value:today(),km=parseInt(String($('uK').value).replace(/\D/g,''),10),p=num($('uP').value),m=$('uMsg');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){say(m,'Indique une date.',true);return}
+  if(!(p>=0)){say(m,'Indique le prix payé.',true);$('uP').focus();return}
+  if(!(km>0)){say(m,'Indique le kilométrage du compteur.',true);$('uK').focus();return}
+  var others=S.charge.filter(function(e){return e.id!==uEdit});
+  if(others.some(function(e){return e.km===km})){say(m,'Il y a déjà une recharge à '+km.toLocaleString('fr-FR')+' km.',true);return}
+  var before=others.filter(function(e){return e.d<=d&&e.km>km})[0],after=others.filter(function(e){return e.d>d&&e.km<km})[0];
+  if(before){say(m,'Le compteur doit dépasser celui de la recharge du '+frDate(before.d)+' ('+before.km.toLocaleString('fr-FR')+' km). Vérifie le kilométrage.',true);return}
+  if(after){say(m,'La recharge du '+frDate(after.d)+' a un kilométrage plus bas ('+after.km.toLocaleString('fr-FR')+' km). Vérifie la date ou le kilométrage.',true);return}
+  var e={id:uEdit||uid(),d:d,km:km,p:Math.round(p*100)/100};
+  if(uEdit)S.charge=S.charge.map(function(x){return x.id===uEdit?e:x});else S.charge.push(e);
+  var was=uEdit;save();uReset();renderChg();
+  var c=chgStats().per[e.id];
+  if(storeOk)say(m,(was?'Modifiée':'Ajoutée')+' : '+eur2(e.p)+' à '+km.toLocaleString('fr-FR')+' km'+(c?' · '+c.dist.toLocaleString('fr-FR')+' km depuis la précédente, '+n1(c.k,1)+' kWh/100 ≈ '+n1(c.l,2)+' L/100':' · point de départ posé')+'.');
+});
+$('uC').onclick=function(){uReset();renderChg();say($('uMsg'),'')};
+$('utb').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  var id=b.getAttribute('data-ued');
+  if(id){
+    var e=S.charge.filter(function(x){return x.id===id})[0];if(!e)return;
+    uEdit=id;$('uD').value=e.d;$('uK').value=e.km;$('uP').value=String(e.p).replace('.',',');$('uDL').classList.remove('hide');
+    $('uB').textContent='Enregistrer la modification';$('uC').classList.remove('hide');
+    say($('uMsg'),'Modification de la recharge du '+frDate(e.d)+'.');renderChg();
+    $('ufrm').scrollIntoView({behavior:'smooth',block:'start'});return;
+  }
+  id=b.getAttribute('data-udel');if(!id)return;
+  if(uDel&&uDel.id===id){
+    clearTimeout(uDel.t);uDel=null;
+    S.charge=S.charge.filter(function(x){return x.id!==id});if(uEdit===id)uReset();
+    save();renderChg();say($('uMsg'),'Recharge supprimée.');return;
+  }
+  if(uDel){clearTimeout(uDel.t);renderChg()}
+  b=document.querySelector('button[data-udel="'+id+'"]');b.textContent='Supprimer ?';b.classList.add('sure');
+  uDel={id:id,t:setTimeout(function(){uDel=null;renderChg()},3000)};
+});
+$('uCsv').onclick=function(){
+  if(!S.charge.length){say($('uMsg'),'Rien à exporter pour l\'instant.');return}
+  var st=chgStats(),f=function(x,d){return x.toFixed(d).replace('.',',')};
+  var out=['Date;Kilométrage;Distance (km);Prix (€);€/100 km;kWh estimés;kWh/100 km;Équivalent L/100 km'];
+  st.A.forEach(function(e){var c=st.per[e.id];out.push([frDate(e.d),e.km,c?c.dist:'',f(e.p,2),c?f(c.c,2):'',c?f(c.kwh,1):'',c?f(c.k,1):'',c?f(c.l,2):''].join(';'))});
+  out.push(';Total;'+(st.dist||'')+';'+f(st.P,2)+';'+(st.c100!=null?f(st.c100,2):'')+';'+(st.kwh!=null?f(st.kwh,1):'')+';'+(st.k100!=null?f(st.k100,1):'')+';'+(st.l100!=null?f(st.l100,2):''));
+  download('recharges-e2008-'+today()+'.csv','text/csv;charset=utf-8','﻿'+out.join('\r\n'));
+  say($('uMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
+};
+
+/* ---------- forecast budget ---------- */
+var B=S.budget;
+function cats(){var o=[];B.rows.forEach(function(r){if(o.indexOf(r.c)<0)o.push(r.c)});return o}
+function occ(r){var a=r.km>0?B.kmAn/r.km:0,b=r.mo>0?12/r.mo:0;return Math.max(a,b)}
+function fld(i,f,t,v){return '<label>'+t+'<input type="number" inputmode="decimal" min="0" data-i="'+i+'" data-f="'+f+'" value="'+v+'"></label>'}
+function renderBudget(){
+  B=S.budget;$('kmAn').value=B.kmAn;
+  var h='';
+  cats().forEach(function(c,ci){
+    h+='<h3>'+esc(c)+'<span id="s'+ci+'"></span></h3>';
+    B.rows.forEach(function(r,i){
+      if(r.c!==c)return;
+      h+='<div class="row"><div class="top"><input class="nm" data-i="'+i+'" data-f="n" value="'+esc(r.n)+'" aria-label="Nom"><button class="x" data-del="'+i+'" aria-label="Supprimer la ligne">×</button></div>'+
+        '<div class="f">'+fld(i,'km','Tous les km',r.km)+fld(i,'mo','ou mois',r.mo)+fld(i,'p','Coût €',r.p)+
+        '</div><div class="res"><span>Coût d\'une fois <b id="u'+i+'"></b></span><span>Par an <b id="a'+i+'"></b></span></div></div>';
+    });
+    h+='<button class="add" data-add="'+esc(c)+'">+ Ajouter une ligne</button>';
+  });
+  $('list').innerHTML=h;calcBudget();
+}
+function calcBudget(){
+  var tot=0,sub={};
+  B.rows.forEach(function(r,i){
+    var a=r.p*occ(r);tot+=a;sub[r.c]=(sub[r.c]||0)+a;
+    var eu=$('u'+i),ea=$('a'+i);if(eu)eu.textContent=eur(r.p);if(ea)ea.textContent=eur(a);
+  });
+  cats().forEach(function(c,ci){var e=$('s'+ci);if(e)e.textContent=eur(sub[c]||0)+' par an'});
+  $('tY').textContent=eur(tot);$('tM').textContent=eur(tot/12);
+  $('tK').textContent=B.kmAn>0?eur(tot/B.kmAn*100,true):'–';
+}
+$('kmAn').addEventListener('input',function(e){B.kmAn=parseFloat(e.target.value)||0;save();calcBudget();renderChg()});
+$('list').addEventListener('input',function(e){
+  var t=e.target,i=t.getAttribute('data-i'),f=t.getAttribute('data-f');if(i===null)return;
+  B.rows[i][f]=f==='n'?t.value:(parseFloat(t.value)||0);save();calcBudget();
+});
+$('list').addEventListener('click',function(e){
+  var t=e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-del')){B.rows.splice(+t.getAttribute('data-del'),1);save();renderBudget()}
+  else if(t.hasAttribute('data-add')){B.rows.push({c:t.getAttribute('data-add'),n:'Nouvelle ligne',km:0,mo:12,p:0});save();renderBudget()}
+});
+var rt=null;
+$('rst').onclick=function(){
+  var rb=this;
+  if(rt){clearTimeout(rt);rt=null;S.budget=defBudget();save();rb.textContent='Réinitialiser le budget';renderBudget();return}
+  rb.textContent='Appuie encore pour confirmer';
+  rt=setTimeout(function(){rt=null;rb.textContent='Réinitialiser le budget'},3000);
+};
+
+/* ---------- intro: once each time the app is opened ---------- */
+(function(){
+  var seen=false;try{seen=sessionStorage.getItem(K+'.intro')==='1';sessionStorage.setItem(K+'.intro','1')}catch(e){}
+  if(seen||/[?&]nointro\b/.test(location.search))return;
+  var el=$('intro');el.classList.remove('hide');
+  function end(){if(el.parentNode)el.remove()}
+  el.addEventListener('animationend',function(ev){if(ev.target===el)end()});
+  el.addEventListener('click',end);
+  document.addEventListener('keydown',end,{once:true});
+  setTimeout(end,4000);
+})();
+
+renderLog();renderChg();
+var t0='chg';try{t0=localStorage.getItem(K+'.tab')||'chg'}catch(e){}
+tab(t0);
+
+/* iPhone / iPad: there is no install prompt, so explain the steps */
+(function(){
+  var ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+  var installed=navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches;
+  var off=false;try{off=localStorage.getItem(K+'.inst')==='off'}catch(e){}
+  if(!ios||installed||off||!/^https?:$/.test(location.protocol))return;
+  var safari=/Safari\//.test(ua)&&!/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|FBAN|FBAV|Instagram|Line\/|Snapchat|GitHub/.test(ua);
+  var addr='https://hdbray-opc.github.io/opc-catalogue/e2008/';
+  $('instT').innerHTML=safari
+    ?'Touche le bouton <b>Partager</b> (le carré avec une flèche vers le haut, en bas de l\'écran ou à côté de l\'adresse), fais défiler et choisis <b>Sur l\'écran d\'accueil</b>, puis <b>Ajouter</b>. L\'app s\'ouvrira ensuite depuis son icône, même sans réseau.'
+    :'Cette page est ouverte dans une autre application que Safari, qui ne permet pas de l\'installer. Copie l\'adresse, ouvre <b>Safari</b>, colle-la dans la barre d\'adresse, puis Partager › <b>Sur l\'écran d\'accueil</b>.<br><small>'+addr+'</small>';
+  if(!safari)$('instC').classList.remove('hide');
+  $('instC').onclick=function(){var b=this;(navigator.clipboard?navigator.clipboard.writeText(addr):Promise.reject()).then(function(){b.textContent='Adresse copiée'},function(){b.textContent='Copie impossible : recopie l\'adresse ci-dessus'})};
+  $('instX').onclick=function(){$('inst').classList.add('hide');try{localStorage.setItem(K+'.inst','off')}catch(e){}};
+  $('inst').classList.remove('hide');
+})();
+
+/* offline on the phone */
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+}
+})();
+</script>
+</body>
+</html>
