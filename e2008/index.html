@@ -163,41 +163,12 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <button class="sec hide" id="instC">Copier l'adresse</button>
 </div>
 <nav role="tablist">
-<button role="tab" id="tabLog" aria-selected="true" aria-controls="pLog">Entretiens</button>
-<button role="tab" id="tabChg" aria-selected="false" aria-controls="pChg">Recharges</button>
+<button role="tab" id="tabChg" aria-selected="true" aria-controls="pChg">Recharges</button>
 <button role="tab" id="tabBud" aria-selected="false" aria-controls="pBud">Budget</button>
 <button role="tab" id="tabVeh" aria-selected="false" aria-controls="pVeh">Véhicule</button>
 </nav>
 
-<section id="pLog" role="tabpanel" aria-labelledby="tabLog">
-<div class="sum">
-<div><small id="lTotL">Total dépensé</small><b id="lTot">–</b></div>
-<div><small id="lYrL">Cette année</small><b id="lYr">–</b></div>
-<div><small>Opérations</small><b id="lCnt">–</b></div>
-</div>
-
-<form class="card frm" id="frm" autocomplete="off">
-<label class="dt">Date<input id="fD" type="date" required></label>
-<label class="op">Type d'opération<input id="fT" list="types" placeholder="Ex. Filtre d'habitacle" required><datalist id="types"></datalist></label>
-<label>Prix €<input id="fP" type="text" inputmode="decimal" placeholder="0,00" required></label>
-<label>Kilométrage<input id="fK" type="text" inputmode="numeric" placeholder="Facultatif"></label>
-<label class="nt">Note<input id="fN" placeholder="Garage, pièces, référence… (facultatif)"></label>
-<div class="btns"><button class="pri" id="fB" type="submit">Ajouter l'entretien</button><button class="sec hide" id="fC" type="button">Annuler</button></div>
-<div id="fMsg" role="status"></div>
-</form>
-
-<div class="bar"><h2>Historique</h2>
-<select id="yrSel" aria-label="Filtrer par année"></select></div>
-<table>
-<thead><tr><th>Date</th><th>Opération</th><th class="n hk">Km</th><th class="n">Prix</th><th class="act"><span class="hide">Actions</span></th></tr></thead>
-<tbody id="tb"></tbody>
-<tfoot><tr><td colspan="2" id="ftL">Total</td><td class="hk"></td><td class="n" id="ftT">–</td><td></td></tr></tfoot>
-</table>
-
-<div class="tools"><button class="sec" id="xCsv">Exporter pour Excel (.csv)</button></div>
-</section>
-
-<section id="pChg" role="tabpanel" aria-labelledby="tabChg" class="hide">
+<section id="pChg" role="tabpanel" aria-labelledby="tabChg">
 <div class="sum four">
 <div><small>kWh/100 km</small><b id="uK100">–</b></div>
 <div><small>≈ L/100 km</small><b id="uL100">–</b></div>
@@ -207,7 +178,7 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 
 <form class="card frm ch" id="ufrm" autocomplete="off">
 <label class="dt hide" id="uDL">Date<input id="uD" type="date"></label>
-<label>Prix payé €<input id="uP" type="text" inputmode="decimal" placeholder="Ex. 12,40" required></label>
+<label>Prix payé € HT<input id="uP" type="text" inputmode="decimal" placeholder="Ex. 10,35" required></label>
 <label>Kilométrage actuel<input id="uK" type="text" inputmode="numeric" placeholder="Ex. 8 450" required></label>
 <div id="uLive"></div>
 <div class="btns"><button class="pri" id="uB" type="submit">Ajouter la recharge</button><button class="sec hide" id="uC" type="button">Annuler</button></div>
@@ -215,7 +186,7 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 </form>
 
 <div class="card info">
-<div><small>Total recharges</small><b id="uTot">–</b></div>
+<div><small>Total recharges TTC</small><b id="uTot">–</b></div>
 <div><small>Km suivis</small><b id="uKm">–</b></div>
 <div><small>kWh estimés</small><b id="uKwh">–</b></div>
 <div><small>Coût en litres de SP95</small><b id="uLe">–</b></div>
@@ -225,7 +196,7 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 
 <div class="bar"><h2>Recharges</h2></div>
 <table>
-<thead><tr><th>Date</th><th class="n hk">Compteur</th><th class="n">Distance</th><th class="n">Prix</th><th class="n hk">kWh/100</th><th class="n">≈ L/100</th><th class="act"><span class="hide">Actions</span></th></tr></thead>
+<thead><tr><th>Date</th><th class="n hk">Compteur</th><th class="n">Distance</th><th class="n">Prix TTC</th><th class="n hk">kWh/100</th><th class="n">≈ L/100</th><th class="act"><span class="hide">Actions</span></th></tr></thead>
 <tbody id="utb"></tbody>
 <tfoot><tr><td id="uftL">Total</td><td class="hk"></td><td class="n" id="uftD">–</td><td class="n" id="uftP">–</td><td class="n hk" id="uftK">–</td><td class="n" id="uftA">–</td><td></td></tr></tfoot>
 </table>
@@ -234,7 +205,7 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <div class="card price" style="margin-top:18px">
 <label for="uRef">Prix moyen du kWh<span><input id="uRef" type="text" inputmode="decimal" placeholder="0,25">€/kWh</span></label>
 <label for="uEss">Prix de l'essence SP95 (comparaison)<span><input id="uEss" type="text" inputmode="decimal" placeholder="1,85">€/L</span></label>
-<p>Tu n'entres que le prix payé : l'énergie est estimée avec ce prix moyen (kWh = prix payé ÷ prix du kWh). Mets ton tarif habituel : maison environ 0,20 €, borne publique 0,30 à 0,45 €, borne rapide 0,45 à 0,65 €.</p>
+<p>Tu entres le prix payé hors taxes : l'app ajoute la TVA de 20 % (TTC = HT × 1,2) et tous les montants sont calculés en TTC. L'énergie est estimée avec ce prix moyen TTC (kWh = prix TTC ÷ prix du kWh). Mets ton tarif habituel TTC : maison environ 0,20 €, borne publique 0,30 à 0,45 €, borne rapide 0,45 à 0,65 €.</p>
 </div>
 <p class="note">Une recharge remplace l'énergie roulée depuis la précédente : sa distance est son kilométrage moins celui de la recharge d'avant, et son prix est rapporté à cette distance. La toute première recharge sert de point de départ. Recharge à peu près au même pourcentage à chaque fois pour des chiffres justes. Équivalence en L/100 km : un litre d'essence contient environ 8,9 kWh, donc L/100 = kWh/100 ÷ 8,9. « Coût en litres de SP95 » dit combien de litres d'essence ton coût aux 100 km aurait payé. Le budget par mois = coût aux 100 km × ton rythme de km par mois, calculé à partir de tes recharges (ou du kilométrage annuel de l'onglet Budget tant qu'il y a moins d'un mois de recharges).</p>
 </section>
@@ -304,7 +275,7 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <input type="file" id="iFile" accept=".json,application/json" class="hide">
 </div>
 <p class="note" id="ioMsg" role="status"></p>
-<p class="note">Tes entretiens et tes recharges restent sur cet appareil. Fais une sauvegarde de temps en temps : elle se restaure aussi bien sur le téléphone que sur l'ordinateur.</p>
+<p class="note">Tes recharges et ton budget restent sur cet appareil. Fais une sauvegarde de temps en temps : elle se restaure aussi bien sur le téléphone que sur l'ordinateur.</p>
 </div>
 
 <script>
@@ -345,148 +316,58 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 var S=null;
 try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
 if(!S||typeof S!=='object')S={};
-if(!Array.isArray(S.log))S.log=[];
 if(!Array.isArray(S.charge))S.charge=[];
+/* prices are typed excluding VAT (HT) and kept including VAT (TTC, p) next to the HT figure (ht).
+   Charges saved before this change were typed HT and stored as p: convert them once. */
+var TVA=0.20;
+function ttc(ht){return Math.round(ht*(1+TVA)*100)/100}
+function toTtc(list){list.forEach(function(e){if(typeof e.ht!=='number'){e.ht=e.p;e.p=ttc(e.p)}})}
+if(!(S.v>=2)){toTtc(S.charge);S.v=2}
 if(!(S.kwhPrice>0))S.kwhPrice=null;
 if(!(S.essPrice>0))S.essPrice=null;
 if(!S.budget||!Array.isArray(S.budget.rows))S.budget=defBudget();
 var storeOk=true;
-function save(){try{localStorage.setItem(K,JSON.stringify(S));storeOk=true}catch(e){storeOk=false;say($('fMsg'),"Enregistrement impossible sur cet appareil (stockage plein ou bloqué).",true)}}
+function save(){try{localStorage.setItem(K,JSON.stringify(S));storeOk=true}catch(e){storeOk=false;say($('uMsg'),"Enregistrement impossible sur cet appareil (stockage plein ou bloqué).",true)}}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 function say(el,t,err){el.textContent=t;el.className=el.getAttribute('role')==='status'&&el.id!=='ioMsg'?(err?'err':''):'note'}
 
 /* ---------- tabs ---------- */
-var TABS={log:['tabLog','pLog'],chg:['tabChg','pChg'],bud:['tabBud','pBud'],veh:['tabVeh','pVeh']};
+var TABS={chg:['tabChg','pChg'],bud:['tabBud','pBud'],veh:['tabVeh','pVeh']};
 function tab(which){
-  if(!TABS[which])which='log';
+  if(!TABS[which])which='chg';
   Object.keys(TABS).forEach(function(k){$(TABS[k][0]).setAttribute('aria-selected',k===which);$(TABS[k][1]).classList.toggle('hide',k!==which)});
   try{localStorage.setItem(K+'.tab',which)}catch(e){}
   if(which==='bud')renderBudget();
   if(which==='chg')renderChg();
 }
-$('tabLog').onclick=function(){tab('log')};
 $('tabChg').onclick=function(){tab('chg')};
 $('tabBud').onclick=function(){tab('bud')};
 $('tabVeh').onclick=function(){tab('veh')};
-
-/* ---------- maintenance log ---------- */
-var editId=null,yrFilter='all',delArm=null;
-function sorted(){return S.log.slice().sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:(b.km||0)-(a.km||0)})}
-function years(){var o={};S.log.forEach(function(e){o[e.d.slice(0,4)]=1});return Object.keys(o).sort().reverse()}
-function renderLog(){
-  var ys=years(),thisY=today().slice(0,4);
-  if(yrFilter!=='all'&&ys.indexOf(yrFilter)<0)yrFilter='all';
-  $('yrSel').innerHTML='<option value="all">Toutes les années</option>'+ys.map(function(y){return '<option value="'+y+'"'+(y===yrFilter?' selected':'')+'>'+y+'</option>'}).join('');
-  var rows=sorted().filter(function(e){return yrFilter==='all'||e.d.slice(0,4)===yrFilter});
-  var h='',cur=null,ySum={};
-  rows.forEach(function(e){var y=e.d.slice(0,4);ySum[y]=(ySum[y]||0)+e.p});
-  rows.forEach(function(e){
-    var y=e.d.slice(0,4);
-    if(yrFilter==='all'&&y!==cur&&ys.length>1){cur=y;h+='<tr class="yr"><td colspan="3" class="yh">'+y+'</td><td class="n">'+eur2(ySum[y])+'</td><td></td></tr>'}
-    h+='<tr data-id="'+e.id+'"'+(e.id===editId?' class="editing"':'')+'><td class="d">'+frDate(e.d)+'</td><td>'+esc(e.t)+
-      (e.km?'<small class="km-m">'+e.km.toLocaleString('fr-FR')+' km</small>':'')+
-      (e.n?'<small>'+esc(e.n)+'</small>':'')+'</td><td class="n hk">'+(e.km?e.km.toLocaleString('fr-FR'):'')+'</td><td class="n">'+eur2(e.p)+
-      '</td><td class="act"><button data-ed="'+e.id+'" aria-label="Modifier" title="Modifier">✎</button><button data-del="'+e.id+'" aria-label="Supprimer" title="Supprimer">×</button></td></tr>';
-  });
-  if(!rows.length)h='<tr><td colspan="5" class="empty">Aucun entretien pour l\'instant. Ajoute le premier avec le formulaire ci-dessus.</td></tr>';
-  $('tb').innerHTML=h;
-  var narrow=window.matchMedia('(max-width:600px)').matches;
-  Array.prototype.forEach.call(document.querySelectorAll('.km-m'),function(x){x.classList.toggle('hide',!narrow)});
-  if(narrow)Array.prototype.forEach.call(document.querySelectorAll('tr.yr td.yh'),function(td){td.colSpan=2});
-  var fTot=rows.reduce(function(s,e){return s+e.p},0);
-  $('ftL').textContent=yrFilter==='all'?'Total ('+rows.length+' opération'+(rows.length>1?'s':'')+')':'Total '+yrFilter+' ('+rows.length+')';
-  $('ftT').textContent=eur2(fTot);
-  var all=S.log.reduce(function(s,e){return s+e.p},0);
-  var yr=S.log.filter(function(e){return e.d.slice(0,4)===thisY}).reduce(function(s,e){return s+e.p},0);
-  $('lTot').textContent=eur2(all);
-  $('lYrL').textContent='En '+thisY;
-  $('lYr').textContent=eur2(yr);
-  $('lCnt').textContent=S.log.length;
-  var t={};S.budget.rows.forEach(function(r){t[r.n]=1});S.log.forEach(function(e){t[e.t]=1});
-  $('types').innerHTML=Object.keys(t).sort(function(a,b){return a.localeCompare(b,'fr')}).map(function(n){return '<option value="'+esc(n)+'">'}).join('');
-}
-window.matchMedia('(max-width:600px)').addEventListener('change',renderLog);
-function resetForm(){
-  editId=null;$('frm').reset();$('fD').value=today();
-  $('fB').textContent="Ajouter l'entretien";$('fC').classList.add('hide');
-}
-$('fD').value=today();
-$('frm').addEventListener('submit',function(ev){
-  ev.preventDefault();
-  var d=$('fD').value,t=$('fT').value.trim(),p=parseFloat(String($('fP').value).replace(/[\s  €]/g,'').replace(',','.')),km=parseInt(String($('fK').value).replace(/\D/g,''),10),n=$('fN').value.trim();
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){say($('fMsg'),'Indique une date.',true);return}
-  if(!t){say($('fMsg'),"Indique le type d'opération.",true);return}
-  if(!(p>=0)){say($('fMsg'),'Indique un prix (0 si gratuit).',true);return}
-  var e={id:editId||uid(),d:d,t:t,p:Math.round(p*100)/100,km:km>0?km:0,n:n};
-  var msg;
-  if(editId){S.log=S.log.map(function(x){return x.id===editId?e:x});msg='Modifié : '+t+'.'}
-  else{S.log.push(e);msg='Ajouté : '+t+' le '+frDate(d)+' pour '+eur2(e.p)+'.'}
-  save();resetForm();renderLog();if(storeOk)say($('fMsg'),msg);
-});
-$('fC').onclick=function(){resetForm();renderLog();say($('fMsg'),'')};
-$('yrSel').onchange=function(){yrFilter=this.value;renderLog()};
-$('tb').addEventListener('click',function(ev){
-  var b=ev.target.closest('button');if(!b)return;
-  var id=b.getAttribute('data-ed');
-  if(id){
-    var e=S.log.filter(function(x){return x.id===id})[0];if(!e)return;
-    editId=id;$('fD').value=e.d;$('fT').value=e.t;$('fP').value=String(e.p).replace('.',',');$('fK').value=e.km||'';$('fN').value=e.n||'';
-    $('fB').textContent='Enregistrer la modification';$('fC').classList.remove('hide');
-    say($('fMsg'),'Modification de « '+e.t+' » du '+frDate(e.d)+'.');renderLog();
-    $('frm').scrollIntoView({behavior:'smooth',block:'start'});$('fT').focus({preventScroll:true});
-    return;
-  }
-  id=b.getAttribute('data-del');if(!id)return;
-  if(delArm&&delArm.id===id){
-    clearTimeout(delArm.t);delArm=null;
-    var gone=S.log.filter(function(x){return x.id===id})[0];
-    S.log=S.log.filter(function(x){return x.id!==id});if(editId===id)resetForm();
-    save();renderLog();if(gone)say($('fMsg'),'Supprimé : '+gone.t+' du '+frDate(gone.d)+'.');
-    return;
-  }
-  if(delArm){clearTimeout(delArm.t);renderLog()}
-  b=document.querySelector('button[data-del="'+id+'"]');
-  b.textContent='Supprimer ?';b.classList.add('sure');
-  delArm={id:id,t:setTimeout(function(){delArm=null;renderLog()},3000)};
-});
 
 /* ---------- export / import ---------- */
 function download(name,type,text){
   var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:type}));a.download=name;
   document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
 }
-$('xCsv').onclick=function(){
-  if(!S.log.length){say($('fMsg'),'Rien à exporter pour l\'instant.');return}
-  function c(v){v=String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
-  var rows=sorted().reverse(),tot=0;
-  var out=['Date;Opération;Kilométrage;Prix (€);Note'];
-  rows.forEach(function(e){tot+=e.p;out.push([frDate(e.d),c(e.t),e.km||'',e.p.toFixed(2).replace('.',','),c(e.n||'')].join(';'))});
-  out.push(';Total;;'+tot.toFixed(2).replace('.',',')+';');
-  download('entretien-e2008-'+today()+'.csv','text/csv;charset=utf-8','﻿'+out.join('\r\n'));
-  say($('fMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
-};
 $('xJson').onclick=function(){
-  download('sauvegarde-entretien-e2008-'+today()+'.json','application/json',JSON.stringify({app:'e2008-entretien',v:1,saved:new Date().toISOString(),log:S.log,charge:S.charge,kwhPrice:S.kwhPrice,essPrice:S.essPrice,budget:S.budget},null,1));
-  say($('ioMsg'),'Sauvegarde créée : '+S.log.length+' entretien'+(S.log.length>1?'s':'')+', '+S.charge.length+' recharge'+(S.charge.length>1?'s':'')+' et le budget.');
+  download('sauvegarde-entretien-e2008-'+today()+'.json','application/json',JSON.stringify({app:'e2008-entretien',v:2,saved:new Date().toISOString(),charge:S.charge,kwhPrice:S.kwhPrice,essPrice:S.essPrice,budget:S.budget},null,1));
+  say($('ioMsg'),'Sauvegarde créée : '+S.charge.length+' recharge'+(S.charge.length>1?'s':'')+' et le budget.');
 };
 $('iJson').onclick=function(){$('iFile').click()};
 $('iFile').onchange=function(){
   var f=this.files&&this.files[0];this.value='';if(!f)return;
   f.text().then(function(txt){
     var o=JSON.parse(txt);
-    if(!o||o.app!=='e2008-entretien'||!Array.isArray(o.log))throw new Error('format');
-    var have={};S.log.forEach(function(e){have[e.id]=1});
-    var add=o.log.filter(function(e){return e&&e.id&&!have[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&typeof e.t==='string'&&typeof e.p==='number'})
-      .map(function(e){return{id:String(e.id),d:e.d,t:e.t,p:e.p,km:+e.km||0,n:typeof e.n==='string'?e.n:''}});
-    S.log=S.log.concat(add);
+    if(!o||o.app!=='e2008-entretien'||!Array.isArray(o.charge))throw new Error('format');
     var hc={};S.charge.forEach(function(e){hc[e.id]=1});
-    var addC=(Array.isArray(o.charge)?o.charge:[]).filter(function(e){return e&&e.id&&!hc[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&e.km>0&&e.p>=0})
-      .map(function(e){return{id:String(e.id),d:e.d,km:+e.km,p:+e.p}});
+    var addC=o.charge.filter(function(e){return e&&e.id&&!hc[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&e.km>0&&e.p>=0})
+      .map(function(e){var c={id:String(e.id),d:e.d,km:+e.km,p:+e.p};if(o.v>=2&&e.ht>=0)c.ht=+e.ht;return c});
+    toTtc(addC); /* backups from before the HT change hold HT prices */
     S.charge=S.charge.concat(addC);
     if(o.kwhPrice>0)S.kwhPrice=o.kwhPrice;
     if(o.essPrice>0)S.essPrice=o.essPrice;
     if(o.budget&&Array.isArray(o.budget.rows))S.budget=o.budget;
-    save();renderLog();renderChg();say($('ioMsg'),'Sauvegarde restaurée : '+add.length+' entretien'+(add.length>1?'s':'')+' et '+addC.length+' recharge'+(addC.length>1?'s':'')+' ajoutés (les doublons sont ignorés).');
+    save();renderChg();say($('ioMsg'),'Sauvegarde restaurée : '+addC.length+' recharge'+(addC.length>1?'s':'')+' ajoutée'+(addC.length>1?'s':'')+' (les doublons sont ignorés).');
   }).catch(function(){say($('ioMsg'),'Ce fichier n\'est pas une sauvegarde du carnet d\'entretien de l\'E-2008.')});
 };
 
@@ -542,11 +423,11 @@ function renderChg(){
     h+='<tr'+(e.id===uEdit?' class="editing"':'')+'><td class="d">'+frDate(e.d)+(narrow?'<small>'+e.km.toLocaleString('fr-FR')+' km</small>':'')+
       '</td><td class="n hk">'+e.km.toLocaleString('fr-FR')+'</td>'+
       (c?'<td class="n">'+c.dist.toLocaleString('fr-FR')+' km</td>':'<td class="n part">'+(e===st.A[0]?'départ':'–')+'</td>')+
-      '<td class="n">'+eur2(e.p)+(c&&narrow?'<small>'+n1(c.k,1)+' kWh/100</small>':'')+'</td>'+
+      '<td class="n">'+eur2(e.p)+'<small>'+eur2(e.ht)+' HT</small>'+(c&&narrow?'<small>'+n1(c.k,1)+' kWh/100</small>':'')+'</td>'+
       (c?'<td class="n hk">'+n1(c.k,1)+'</td><td class="n"><b>'+n1(c.l,2)+'</b></td>':'<td class="n hk part">–</td><td class="n part">–</td>')+
       '<td class="act"><button data-ued="'+e.id+'" aria-label="Modifier" title="Modifier">✎</button><button data-udel="'+e.id+'" aria-label="Supprimer" title="Supprimer">×</button></td></tr>';
   });
-  if(!rows.length)h='<tr><td colspan="7" class="empty">Aucune recharge pour l\'instant. Entre le prix payé et le kilométrage du compteur : la première recharge sert de point de départ, les calculs commencent à la deuxième.</td></tr>';
+  if(!rows.length)h='<tr><td colspan="7" class="empty">Aucune recharge pour l\'instant. Entre le prix payé hors taxes et le kilométrage du compteur : la première recharge sert de point de départ, les calculs commencent à la deuxième.</td></tr>';
   $('utb').innerHTML=h;
   $('uftL').textContent='Total ('+rows.length+' recharge'+(rows.length>1?'s':'')+')';
   $('uftD').textContent=st.dist?st.dist.toLocaleString('fr-FR')+' km':'–';
@@ -569,8 +450,8 @@ function live(){
   if(!(km>0)){var l=all[all.length-1];el.innerHTML='Dernière recharge à <b>'+l.km.toLocaleString('fr-FR')+' km</b> le '+frDate(l.d)+'.';return}
   var prev=all.filter(function(e){return e.km<km}).pop();
   if(!prev){el.textContent='Ce kilométrage est plus bas que toutes les recharges enregistrées.';return}
-  var d=km-prev.km,t='<b>'+d.toLocaleString('fr-FR')+' km</b> depuis la recharge du '+frDate(prev.d);
-  if(d>0&&p>0){var k=p/kwhP()/d*100;t+=' · '+eur(p/d*100,true)+' aux 100 km · '+n1(k,1)+' kWh/100 · ≈ '+n1(k/KWH_PER_L,2)+' L/100'}
+  var d=km-prev.km,t=(p>0?'<b>'+eur2(ttc(p))+' TTC</b> · ':'')+'<b>'+d.toLocaleString('fr-FR')+' km</b> depuis la recharge du '+frDate(prev.d);
+  if(d>0&&p>0){p=ttc(p);var k=p/kwhP()/d*100;t+=' · '+eur(p/d*100,true)+' aux 100 km · '+n1(k,1)+' kWh/100 · ≈ '+n1(k/KWH_PER_L,2)+' L/100'}
   el.innerHTML=t;
 }
 $('ufrm').addEventListener('input',live);
@@ -578,18 +459,18 @@ $('ufrm').addEventListener('submit',function(ev){
   ev.preventDefault();
   var d=uEdit?$('uD').value:today(),km=parseInt(String($('uK').value).replace(/\D/g,''),10),p=num($('uP').value),m=$('uMsg');
   if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){say(m,'Indique une date.',true);return}
-  if(!(p>=0)){say(m,'Indique le prix payé.',true);$('uP').focus();return}
+  if(!(p>=0)){say(m,'Indique le prix payé hors taxes.',true);$('uP').focus();return}
   if(!(km>0)){say(m,'Indique le kilométrage du compteur.',true);$('uK').focus();return}
   var others=S.charge.filter(function(e){return e.id!==uEdit});
   if(others.some(function(e){return e.km===km})){say(m,'Il y a déjà une recharge à '+km.toLocaleString('fr-FR')+' km.',true);return}
   var before=others.filter(function(e){return e.d<=d&&e.km>km})[0],after=others.filter(function(e){return e.d>d&&e.km<km})[0];
   if(before){say(m,'Le compteur doit dépasser celui de la recharge du '+frDate(before.d)+' ('+before.km.toLocaleString('fr-FR')+' km). Vérifie le kilométrage.',true);return}
   if(after){say(m,'La recharge du '+frDate(after.d)+' a un kilométrage plus bas ('+after.km.toLocaleString('fr-FR')+' km). Vérifie la date ou le kilométrage.',true);return}
-  var e={id:uEdit||uid(),d:d,km:km,p:Math.round(p*100)/100};
+  var ht=Math.round(p*100)/100,e={id:uEdit||uid(),d:d,km:km,ht:ht,p:ttc(ht)};
   if(uEdit)S.charge=S.charge.map(function(x){return x.id===uEdit?e:x});else S.charge.push(e);
   var was=uEdit;save();uReset();renderChg();
   var c=chgStats().per[e.id];
-  if(storeOk)say(m,(was?'Modifiée':'Ajoutée')+' : '+eur2(e.p)+' à '+km.toLocaleString('fr-FR')+' km'+(c?' · '+c.dist.toLocaleString('fr-FR')+' km depuis la précédente, '+n1(c.k,1)+' kWh/100 ≈ '+n1(c.l,2)+' L/100':' · point de départ posé')+'.');
+  if(storeOk)say(m,(was?'Modifiée':'Ajoutée')+' : '+eur2(e.ht)+' HT, soit '+eur2(e.p)+' TTC, à '+km.toLocaleString('fr-FR')+' km'+(c?' · '+c.dist.toLocaleString('fr-FR')+' km depuis la précédente, '+n1(c.k,1)+' kWh/100 ≈ '+n1(c.l,2)+' L/100':' · point de départ posé')+'.');
 });
 $('uC').onclick=function(){uReset();renderChg();say($('uMsg'),'')};
 $('utb').addEventListener('click',function(ev){
@@ -597,7 +478,7 @@ $('utb').addEventListener('click',function(ev){
   var id=b.getAttribute('data-ued');
   if(id){
     var e=S.charge.filter(function(x){return x.id===id})[0];if(!e)return;
-    uEdit=id;$('uD').value=e.d;$('uK').value=e.km;$('uP').value=String(e.p).replace('.',',');$('uDL').classList.remove('hide');
+    uEdit=id;$('uD').value=e.d;$('uK').value=e.km;$('uP').value=String(e.ht).replace('.',',');$('uDL').classList.remove('hide');
     $('uB').textContent='Enregistrer la modification';$('uC').classList.remove('hide');
     say($('uMsg'),'Modification de la recharge du '+frDate(e.d)+'.');renderChg();
     $('ufrm').scrollIntoView({behavior:'smooth',block:'start'});return;
@@ -615,9 +496,9 @@ $('utb').addEventListener('click',function(ev){
 $('uCsv').onclick=function(){
   if(!S.charge.length){say($('uMsg'),'Rien à exporter pour l\'instant.');return}
   var st=chgStats(),f=function(x,d){return x.toFixed(d).replace('.',',')};
-  var out=['Date;Kilométrage;Distance (km);Prix (€);€/100 km;kWh estimés;kWh/100 km;Équivalent L/100 km'];
-  st.A.forEach(function(e){var c=st.per[e.id];out.push([frDate(e.d),e.km,c?c.dist:'',f(e.p,2),c?f(c.c,2):'',c?f(c.kwh,1):'',c?f(c.k,1):'',c?f(c.l,2):''].join(';'))});
-  out.push(';Total;'+(st.dist||'')+';'+f(st.P,2)+';'+(st.c100!=null?f(st.c100,2):'')+';'+(st.kwh!=null?f(st.kwh,1):'')+';'+(st.k100!=null?f(st.k100,1):'')+';'+(st.l100!=null?f(st.l100,2):''));
+  var out=['Date;Kilométrage;Distance (km);Prix HT (€);Prix TTC (€);€ TTC/100 km;kWh estimés;kWh/100 km;Équivalent L/100 km'],H=0;
+  st.A.forEach(function(e){var c=st.per[e.id];H+=e.ht;out.push([frDate(e.d),e.km,c?c.dist:'',f(e.ht,2),f(e.p,2),c?f(c.c,2):'',c?f(c.kwh,1):'',c?f(c.k,1):'',c?f(c.l,2):''].join(';'))});
+  out.push(';Total;'+(st.dist||'')+';'+f(H,2)+';'+f(st.P,2)+';'+(st.c100!=null?f(st.c100,2):'')+';'+(st.kwh!=null?f(st.kwh,1):'')+';'+(st.k100!=null?f(st.k100,1):'')+';'+(st.l100!=null?f(st.l100,2):''));
   download('recharges-e2008-'+today()+'.csv','text/csv;charset=utf-8','﻿'+out.join('\r\n'));
   say($('uMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
 };
@@ -682,7 +563,7 @@ $('rst').onclick=function(){
   setTimeout(end,4000);
 })();
 
-renderLog();renderChg();
+renderChg();
 var t0='chg';try{t0=localStorage.getItem(K+'.tab')||'chg'}catch(e){}
 tab(t0);
 
