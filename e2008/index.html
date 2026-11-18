@@ -189,7 +189,7 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <div><small>Total recharges TTC</small><b id="uTot">–</b></div>
 <div><small>Km suivis</small><b id="uKm">–</b></div>
 <div><small>kWh estimés</small><b id="uKwh">–</b></div>
-<div><small>Coût en litres de SP95</small><b id="uLe">–</b></div>
+<div><small>Coût en litres de gazole</small><b id="uLe">–</b></div>
 <div><small>Rythme retenu</small><b id="uRy">–</b></div>
 <div><small>Budget par an</small><b id="uAn">–</b></div>
 </div>
@@ -204,10 +204,11 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 
 <div class="card price" style="margin-top:18px">
 <label for="uRef">Prix moyen du kWh<span><input id="uRef" type="text" inputmode="decimal" placeholder="0,25">€/kWh</span></label>
-<label for="uEss">Prix de l'essence SP95 (comparaison)<span><input id="uEss" type="text" inputmode="decimal" placeholder="1,85">€/L</span></label>
-<p>Tu entres le prix payé hors taxes : l'app ajoute la TVA de 20 % (TTC = HT × 1,2) et tous les montants sont calculés en TTC. L'énergie est estimée avec ce prix moyen TTC (kWh = prix TTC ÷ prix du kWh). Mets ton tarif habituel TTC : maison environ 0,20 €, borne publique 0,30 à 0,45 €, borne rapide 0,45 à 0,65 €.</p>
+<label for="uEss">Prix du gazole de secours<span><input id="uEss" type="text" inputmode="decimal" placeholder="1,80">€/L</span></label>
+<p id="dzNow">Prix officiel du gazole : recherche…</p>
+<p>À chaque nouvelle recharge, l'app récupère le prix moyen du gazole du jour sur les données officielles du gouvernement (prix-carburants.gouv.fr, moyenne de toutes les stations de France) et l'enregistre avec la recharge. Sans réseau, elle utilise le prix de secours ci-dessus. Tu entres le prix payé hors taxes : l'app ajoute la TVA de 20 % (TTC = HT × 1,2) et tous les montants sont calculés en TTC. L'énergie est estimée avec ce prix moyen TTC (kWh = prix TTC ÷ prix du kWh). Mets ton tarif habituel TTC : maison environ 0,20 €, borne publique 0,30 à 0,45 €, borne rapide 0,45 à 0,65 €.</p>
 </div>
-<p class="note">Une recharge remplace l'énergie roulée depuis la précédente : sa distance est son kilométrage moins celui de la recharge d'avant, et son prix est rapporté à cette distance. La toute première recharge sert de point de départ. Recharge à peu près au même pourcentage à chaque fois pour des chiffres justes. Équivalence en L/100 km : un litre d'essence contient environ 8,9 kWh, donc L/100 = kWh/100 ÷ 8,9. « Coût en litres de SP95 » dit combien de litres d'essence ton coût aux 100 km aurait payé. Le budget par mois = coût aux 100 km × ton rythme de km par mois, calculé à partir de tes recharges (ou du kilométrage annuel de l'onglet Budget tant qu'il y a moins d'un mois de recharges).</p>
+<p class="note">Une recharge remplace l'énergie roulée depuis la précédente : sa distance est son kilométrage moins celui de la recharge d'avant, et son prix est rapporté à cette distance. La toute première recharge sert de point de départ. Recharge à peu près au même pourcentage à chaque fois pour des chiffres justes. Équivalence en L/100 km : un litre de gazole contient environ 10 kWh, donc L/100 = kWh/100 ÷ 10. « Coût en litres de gazole » dit combien de litres de gazole ton coût aux 100 km aurait payé, au prix du jour de chaque recharge. Le budget par mois = coût aux 100 km × ton rythme de km par mois, calculé à partir de tes recharges (ou du kilométrage annuel de l'onglet Budget tant qu'il y a moins d'un mois de recharges).</p>
 </section>
 
 <section id="pBud" role="tabpanel" aria-labelledby="tabBud" class="hide">
@@ -227,7 +228,7 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 <div><small>Autonomie WLTP</small><b>406 km</b></div>
 <div><small>Batterie utile</small><b>50,8 kWh</b></div>
 <div><small>Conso WLTP</small><b>15,2–15,7</b></div>
-<div><small>≈ en essence</small><b>1,7 L</b></div>
+<div><small>≈ en gazole</small><b>1,5 L</b></div>
 </div>
 <div class="card">
 <div class="vin" aria-label="VIN VR3UKZKW1TJ774904"><span>VR3</span><span>UKZKW</span><span>1</span><span>TJ</span><span>774904</span></div>
@@ -282,7 +283,7 @@ h3 span{font-weight:600;color:var(--mute);font-family:Archivo,sans-serif;font-si
 (function(){
 'use strict';
 var K='e2008-entretien-v1';
-var KWH_PER_L=8.9,DEF_KWH=0.25,DEF_ESS=1.85;
+var KWH_PER_L=10,DEF_KWH=0.25,DEF_ESS=1.80; /* diesel (gazole): ~10 kWh per litre */
 var D=[
 ["Entretien courant","Révision Peugeot (atelier, contrôles + mises à jour)",25000,24,150],
 ["Entretien courant","Filtre d'habitacle charbon actif",20000,12,25],
@@ -324,7 +325,8 @@ function ttc(ht){return Math.round(ht*(1+TVA)*100)/100}
 function toTtc(list){list.forEach(function(e){if(typeof e.ht!=='number'){e.ht=e.p;e.p=ttc(e.p)}})}
 if(!(S.v>=2)){toTtc(S.charge);S.v=2}
 if(!(S.kwhPrice>0))S.kwhPrice=null;
-if(!(S.essPrice>0))S.essPrice=null;
+delete S.essPrice; /* old SP95 price: the comparison is now with diesel */
+if(!(S.dzPrice>0))S.dzPrice=null;
 if(!S.budget||!Array.isArray(S.budget.rows))S.budget=defBudget();
 var storeOk=true;
 function save(){try{localStorage.setItem(K,JSON.stringify(S));storeOk=true}catch(e){storeOk=false;say($('uMsg'),"Enregistrement impossible sur cet appareil (stockage plein ou bloqué).",true)}}
@@ -350,7 +352,7 @@ function download(name,type,text){
   document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
 }
 $('xJson').onclick=function(){
-  download('sauvegarde-entretien-e2008-'+today()+'.json','application/json',JSON.stringify({app:'e2008-entretien',v:2,saved:new Date().toISOString(),charge:S.charge,kwhPrice:S.kwhPrice,essPrice:S.essPrice,budget:S.budget},null,1));
+  download('sauvegarde-entretien-e2008-'+today()+'.json','application/json',JSON.stringify({app:'e2008-entretien',v:2,saved:new Date().toISOString(),charge:S.charge,kwhPrice:S.kwhPrice,dzPrice:S.dzPrice,budget:S.budget},null,1));
   say($('ioMsg'),'Sauvegarde créée : '+S.charge.length+' recharge'+(S.charge.length>1?'s':'')+' et le budget.');
 };
 $('iJson').onclick=function(){$('iFile').click()};
@@ -361,11 +363,11 @@ $('iFile').onchange=function(){
     if(!o||o.app!=='e2008-entretien'||!Array.isArray(o.charge))throw new Error('format');
     var hc={};S.charge.forEach(function(e){hc[e.id]=1});
     var addC=o.charge.filter(function(e){return e&&e.id&&!hc[e.id]&&/^\d{4}-\d{2}-\d{2}$/.test(e.d)&&e.km>0&&e.p>=0})
-      .map(function(e){var c={id:String(e.id),d:e.d,km:+e.km,p:+e.p};if(o.v>=2&&e.ht>=0)c.ht=+e.ht;return c});
+      .map(function(e){var c={id:String(e.id),d:e.d,km:+e.km,p:+e.p};if(o.v>=2&&e.ht>=0)c.ht=+e.ht;if(e.dz>0){c.dz=+e.dz;c.dzSrc=e.dzSrc==='gouv'?'gouv':'secours'}return c});
     toTtc(addC); /* backups from before the HT change hold HT prices */
     S.charge=S.charge.concat(addC);
     if(o.kwhPrice>0)S.kwhPrice=o.kwhPrice;
-    if(o.essPrice>0)S.essPrice=o.essPrice;
+    if(o.dzPrice>0)S.dzPrice=o.dzPrice;
     if(o.budget&&Array.isArray(o.budget.rows))S.budget=o.budget;
     save();renderChg();say($('ioMsg'),'Sauvegarde restaurée : '+addC.length+' recharge'+(addC.length>1?'s':'')+' ajoutée'+(addC.length>1?'s':'')+' (les doublons sont ignorés).');
   }).catch(function(){say($('ioMsg'),'Ce fichier n\'est pas une sauvegarde du carnet d\'entretien de l\'E-2008.')});
@@ -375,7 +377,31 @@ $('iFile').onchange=function(){
 function num(v){return parseFloat(String(v).replace(/[\s  €L]/gi,'').replace(',','.'))}
 function n1(x,d){return x.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})}
 function kwhP(){return S.kwhPrice||DEF_KWH}
-function essP(){return S.essPrice||DEF_ESS}
+/* diesel price: today's official French average (government open data, all stations),
+   else the backup price typed by the user, else the last official price seen, else a default */
+var DZ_URL='https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records'+
+  '?select=avg(gazole_prix)%20as%20moy,count(*)%20as%20n,max(gazole_maj)%20as%20maj&where=gazole_prix%20is%20not%20null%20and%20gazole_maj%3E%3Dnow(days%3D-3)&limit=1';
+var dzToday=null; /* {p,n,maj,day} */
+function dzBackup(){return S.dzPrice||(S.dzLast&&S.dzLast.p)||DEF_ESS}
+function essP(){return dzToday&&dzToday.day===today()?dzToday.p:dzBackup()}
+function chgDz(e){return e.dz>0?e.dz:essP()}
+function fetchDz(){
+  if(dzToday&&dzToday.day===today())return Promise.resolve(dzToday);
+  var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){ctl&&ctl.abort()},8000);
+  return fetch(DZ_URL,{cache:'no-store',signal:ctl&&ctl.signal}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(j){
+    clearTimeout(tm);
+    var x=j&&j.results&&j.results[0];
+    if(!x||!(x.moy>0.5&&x.moy<5)||!(x.n>100))throw new Error('data');
+    dzToday={p:Math.round(x.moy*1000)/1000,n:x.n,maj:x.maj,day:today()};
+    S.dzLast={p:dzToday.p,d:today()};save();
+    return dzToday;
+  },function(err){clearTimeout(tm);throw err});
+}
+function showDz(){
+  var el=$('dzNow');
+  if(dzToday&&dzToday.day===today())el.innerHTML='Prix officiel du gazole aujourd\'hui : <b>'+n1(dzToday.p,3)+' €/L</b> (moyenne de '+dzToday.n.toLocaleString('fr-FR')+' stations, prix-carburants.gouv.fr).';
+  else el.innerHTML='Prix officiel du gazole indisponible pour l\'instant (pas de réseau ?). Prix utilisé : <b>'+n1(dzBackup(),3)+' €/L</b>'+(S.dzPrice?' (ton prix de secours)':S.dzLast?' (dernier prix officiel, du '+frDate(S.dzLast.d)+')':' (valeur par défaut)')+'.';
+}
 function chgAsc(){return S.charge.slice().sort(function(a,b){return a.km-b.km||(a.d<b.d?-1:a.d>b.d?1:0)})}
 /* each charge refills the energy used since the previous one: its price over the distance
    driven from the previous charge's odometer reading */
@@ -384,14 +410,15 @@ function chgStats(){
   A.forEach(function(e,i){
     if(i===0)return;
     var dist=e.km-A[i-1].km;
-    if(dist>0){var kwh=e.p/kp;per[e.id]={dist:dist,c:e.p/dist*100,kwh:kwh,k:kwh/dist*100,l:kwh/dist*100/KWH_PER_L}}
+    if(dist>0){var kwh=e.p/kp;per[e.id]={dist:dist,c:e.p/dist*100,kwh:kwh,k:kwh/dist*100,l:kwh/dist*100/KWH_PER_L,lz:e.p/chgDz(e)/dist*100}}
   });
   var st={A:A,per:per,P:0};
   A.forEach(function(e){st.P+=e.p});
   if(A.length>1&&A[A.length-1].km>A[0].km){
-    var P=0;for(var j=1;j<A.length;j++)P+=A[j].p;
+    var P=0,Lz=0;for(var j=1;j<A.length;j++){P+=A[j].p;Lz+=A[j].p/chgDz(A[j])}
     st.dist=A[A.length-1].km-A[0].km;st.Pused=P;st.kwh=P/kp;
-    st.k100=st.kwh/st.dist*100;st.l100=st.k100/KWH_PER_L;st.c100=P/st.dist*100;st.le=st.c100/essP();
+    /* litres of diesel the money would have bought, each charge at its own day's diesel price */
+    st.k100=st.kwh/st.dist*100;st.l100=st.k100/KWH_PER_L;st.c100=P/st.dist*100;st.le=Lz/st.dist*100;
   }
   if(A.length>1){
     var byD=A.slice().sort(function(x,y){return x.d<y.d?-1:x.d>y.d?1:x.km-y.km}),f=byD[0],l=byD[byD.length-1];
@@ -413,17 +440,19 @@ function renderChg(){
   $('uKm').textContent=st.dist?st.dist.toLocaleString('fr-FR')+' km':'–';
   $('uKwh').textContent=st.kwh!=null?n1(st.kwh,0)+' kWh':'–';
   $('uLe').textContent=st.le!=null?n1(st.le,1)+' L/100 km':'–';
+  $('uLe').title=st.le!=null?'Ton coût aux 100 km, converti en litres de gazole au prix du jour de chaque recharge':'';
   $('uRy').textContent=st.pace?Math.round(st.pace).toLocaleString('fr-FR')+' km/mois ('+st.paceSrc+')':'–';
   $('uAn').textContent=st.yr!=null?eur(st.yr):'–';
   if(document.activeElement!==$('uRef'))$('uRef').value=S.kwhPrice?n1(S.kwhPrice,3).replace(/0$/,''):'';
-  if(document.activeElement!==$('uEss'))$('uEss').value=S.essPrice?n1(S.essPrice,3).replace(/0$/,''):'';
+  if(document.activeElement!==$('uEss'))$('uEss').value=S.dzPrice?n1(S.dzPrice,3).replace(/0$/,''):'';
+  showDz();
   var rows=st.A.slice().reverse(),h='';
   rows.forEach(function(e){
     var c=st.per[e.id];
     h+='<tr'+(e.id===uEdit?' class="editing"':'')+'><td class="d">'+frDate(e.d)+(narrow?'<small>'+e.km.toLocaleString('fr-FR')+' km</small>':'')+
       '</td><td class="n hk">'+e.km.toLocaleString('fr-FR')+'</td>'+
       (c?'<td class="n">'+c.dist.toLocaleString('fr-FR')+' km</td>':'<td class="n part">'+(e===st.A[0]?'départ':'–')+'</td>')+
-      '<td class="n">'+eur2(e.p)+'<small>'+eur2(e.ht)+' HT</small>'+(c&&narrow?'<small>'+n1(c.k,1)+' kWh/100</small>':'')+'</td>'+
+      '<td class="n">'+eur2(e.p)+'<small>'+eur2(e.ht)+' HT</small>'+(e.dz>0?'<small title="'+(e.dzSrc==='gouv'?'Prix officiel du jour':'Prix de secours')+'">gazole '+n1(e.dz,3)+' €'+(e.dzSrc==='gouv'?'':' *')+'</small>':'')+(c&&narrow?'<small>'+n1(c.k,1)+' kWh/100</small>':'')+'</td>'+
       (c?'<td class="n hk">'+n1(c.k,1)+'</td><td class="n"><b>'+n1(c.l,2)+'</b></td>':'<td class="n hk part">–</td><td class="n part">–</td>')+
       '<td class="act"><button data-ued="'+e.id+'" aria-label="Modifier" title="Modifier">✎</button><button data-udel="'+e.id+'" aria-label="Supprimer" title="Supprimer">×</button></td></tr>';
   });
@@ -440,7 +469,7 @@ window.matchMedia('(max-width:600px)').addEventListener('change',renderChg);
 function uReset(){uEdit=null;$('ufrm').reset();$('uD').value=today();$('uDL').classList.add('hide');$('uB').textContent='Ajouter la recharge';$('uC').classList.add('hide');live()}
 $('uD').value=today();
 $('uRef').addEventListener('input',function(){var v=num(this.value);S.kwhPrice=v>0?Math.round(v*1000)/1000:null;save();renderChg()});
-$('uEss').addEventListener('input',function(){var v=num(this.value);S.essPrice=v>0?Math.round(v*1000)/1000:null;save();renderChg()});
+$('uEss').addEventListener('input',function(){var v=num(this.value);S.dzPrice=v>0?Math.round(v*1000)/1000:null;save();renderChg()});
 $('uRef').addEventListener('blur',renderChg);$('uEss').addEventListener('blur',renderChg);
 /* live: distance since the previous charge, and what this charge gives per 100 km */
 function live(){
@@ -466,11 +495,20 @@ $('ufrm').addEventListener('submit',function(ev){
   var before=others.filter(function(e){return e.d<=d&&e.km>km})[0],after=others.filter(function(e){return e.d>d&&e.km<km})[0];
   if(before){say(m,'Le compteur doit dépasser celui de la recharge du '+frDate(before.d)+' ('+before.km.toLocaleString('fr-FR')+' km). Vérifie le kilométrage.',true);return}
   if(after){say(m,'La recharge du '+frDate(after.d)+' a un kilométrage plus bas ('+after.km.toLocaleString('fr-FR')+' km). Vérifie la date ou le kilométrage.',true);return}
-  var ht=Math.round(p*100)/100,e={id:uEdit||uid(),d:d,km:km,ht:ht,p:ttc(ht)};
-  if(uEdit)S.charge=S.charge.map(function(x){return x.id===uEdit?e:x});else S.charge.push(e);
-  var was=uEdit;save();uReset();renderChg();
-  var c=chgStats().per[e.id];
-  if(storeOk)say(m,(was?'Modifiée':'Ajoutée')+' : '+eur2(e.ht)+' HT, soit '+eur2(e.p)+' TTC, à '+km.toLocaleString('fr-FR')+' km'+(c?' · '+c.dist.toLocaleString('fr-FR')+' km depuis la précédente, '+n1(c.k,1)+' kWh/100 ≈ '+n1(c.l,2)+' L/100':' · point de départ posé')+'.');
+  var ht=Math.round(p*100)/100,e={id:uEdit||uid(),d:d,km:km,ht:ht,p:ttc(ht)},was=uEdit;
+  function store(){
+    if(was)S.charge=S.charge.map(function(x){return x.id===was?e:x});else S.charge.push(e);
+    save();uReset();renderChg();$('uB').disabled=false;
+    var c=chgStats().per[e.id];
+    if(storeOk)say(m,(was?'Modifiée':'Ajoutée')+' : '+eur2(e.ht)+' HT, soit '+eur2(e.p)+' TTC, à '+km.toLocaleString('fr-FR')+' km'+(c?' · '+c.dist.toLocaleString('fr-FR')+' km depuis la précédente, '+n1(c.k,1)+' kWh/100 ≈ '+n1(c.l,2)+' L/100':' · point de départ posé')+
+      ' · gazole '+n1(e.dz,3)+' €/L'+(e.dzSrc==='gouv'?' (prix officiel du jour)':' (prix de secours : prix officiel indisponible)')+'.');
+  }
+  if(was){ /* an edit keeps the diesel price recorded with the charge */
+    var old=S.charge.filter(function(x){return x.id===was})[0]||{};
+    e.dz=old.dz>0?old.dz:dzBackup();e.dzSrc=old.dz>0?old.dzSrc:'secours';store();return;
+  }
+  $('uB').disabled=true;say(m,'Recherche du prix officiel du gazole du jour…');
+  fetchDz().then(function(z){e.dz=z.p;e.dzSrc='gouv'},function(){e.dz=dzBackup();e.dzSrc='secours'}).then(store);
 });
 $('uC').onclick=function(){uReset();renderChg();say($('uMsg'),'')};
 $('utb').addEventListener('click',function(ev){
@@ -496,9 +534,9 @@ $('utb').addEventListener('click',function(ev){
 $('uCsv').onclick=function(){
   if(!S.charge.length){say($('uMsg'),'Rien à exporter pour l\'instant.');return}
   var st=chgStats(),f=function(x,d){return x.toFixed(d).replace('.',',')};
-  var out=['Date;Kilométrage;Distance (km);Prix HT (€);Prix TTC (€);€ TTC/100 km;kWh estimés;kWh/100 km;Équivalent L/100 km'],H=0;
-  st.A.forEach(function(e){var c=st.per[e.id];H+=e.ht;out.push([frDate(e.d),e.km,c?c.dist:'',f(e.ht,2),f(e.p,2),c?f(c.c,2):'',c?f(c.kwh,1):'',c?f(c.k,1):'',c?f(c.l,2):''].join(';'))});
-  out.push(';Total;'+(st.dist||'')+';'+f(H,2)+';'+f(st.P,2)+';'+(st.c100!=null?f(st.c100,2):'')+';'+(st.kwh!=null?f(st.kwh,1):'')+';'+(st.k100!=null?f(st.k100,1):'')+';'+(st.l100!=null?f(st.l100,2):''));
+  var out=['Date;Kilométrage;Distance (km);Prix HT (€);Prix TTC (€);€ TTC/100 km;kWh estimés;kWh/100 km;Équivalent L/100 km;Gazole du jour (€/L);Coût en L de gazole/100 km'],H=0;
+  st.A.forEach(function(e){var c=st.per[e.id];H+=e.ht;out.push([frDate(e.d),e.km,c?c.dist:'',f(e.ht,2),f(e.p,2),c?f(c.c,2):'',c?f(c.kwh,1):'',c?f(c.k,1):'',c?f(c.l,2):'',e.dz>0?f(e.dz,3)+(e.dzSrc==='gouv'?'':' (secours)'):'',c?f(c.lz,2):''].join(';'))});
+  out.push(';Total;'+(st.dist||'')+';'+f(H,2)+';'+f(st.P,2)+';'+(st.c100!=null?f(st.c100,2):'')+';'+(st.kwh!=null?f(st.kwh,1):'')+';'+(st.k100!=null?f(st.k100,1):'')+';'+(st.l100!=null?f(st.l100,2):'')+';;'+(st.le!=null?f(st.le,2):''));
   download('recharges-e2008-'+today()+'.csv','text/csv;charset=utf-8','﻿'+out.join('\r\n'));
   say($('uMsg'),'Fichier CSV créé (s\'ouvre dans Excel ou Numbers).');
 };
@@ -564,6 +602,7 @@ $('rst').onclick=function(){
 })();
 
 renderChg();
+fetchDz().then(renderChg,renderChg);
 var t0='chg';try{t0=localStorage.getItem(K+'.tab')||'chg'}catch(e){}
 tab(t0);
 

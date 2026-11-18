@@ -1,7 +1,7 @@
 /* Carnet d'entretien E-2008: keeps the app on the phone so it opens without network.
    The entries themselves are in the browser's storage (localStorage), not here.
    Fonts are shared with the Insignia log (../entretien/fonts). */
-var CACHE='e2008-entretien-1.1.0';
+var CACHE='e2008-entretien-1.2.0';
 var FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png',
   '../entretien/fonts/Archivo-400.woff2','../entretien/fonts/Archivo-600.woff2','../entretien/fonts/ArchivoNarrow-700.woff2'];
 self.addEventListener('install',function(e){
